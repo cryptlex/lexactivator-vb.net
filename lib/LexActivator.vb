@@ -50,7 +50,7 @@ Namespace Cryptlex
             Return Native.SetProductFile(filePath)
 #End If
 
-        End Function  
+        End Function
 
         '
         '     FUNCTION: SetProductData()
@@ -79,7 +79,7 @@ Namespace Cryptlex
             Return Native.SetProductData(productData)
 #End If
 
-        End Function 
+        End Function
 
         '
         '     FUNCTION: SetProductVersionGuid()
@@ -620,7 +620,7 @@ Namespace Cryptlex
             Return Native.ExtendTrial(trialExtensionKey)
 #End If
         End Function
-        
+
         '
         '     FUNCTION: ActivateLocalTrial()
 
@@ -666,6 +666,27 @@ Namespace Cryptlex
 #End If
         End Function
 
+        '
+        '     FUNCTION: ExtendLocalTrial()
+
+        '     PURPOSE: Extends the local trial.
+
+        '     PARAMETERS:
+        '     * trialExtensionLength - number of days to extend the trial
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_GUID, LA_E_TIME, LA_E_LOCAL_TRIAL_NOT_EXPIRED
+
+        '     NOTE: The function is only meant for unverified trials.
+        '
+
+        Public Shared Function ExtendLocalTrial(trialExtensionLength As UInteger) As Integer
+#If LA_ANY_CPU Then
+			Return If(IntPtr.Size = 8, Native.ExtendLocalTrial_x64(trialExtensionLength), Native.ExtendLocalTrial(trialExtensionLength))
+#Else
+            Return Native.ExtendLocalTrial(trialExtensionLength)
+#End If
+        End Function
+
         '** Return Codes **
 
 
@@ -681,7 +702,7 @@ Namespace Cryptlex
         ' with. Ensure your date and time settings are correct.
         '
 
-        Public Const LA_EXPIRED       As Integer = 2
+        Public Const LA_EXPIRED As Integer = 2
 
         '
         ' CODE: LA_REVOKED
@@ -689,7 +710,7 @@ Namespace Cryptlex
         ' MESSAGE: The product key has been revoked.
         '
 
-        Public Const LA_REVOKED       As Integer = 3
+        Public Const LA_REVOKED As Integer = 3
 
         '
         ' CODE: LA_GP_OVER
@@ -697,23 +718,25 @@ Namespace Cryptlex
         ' MESSAGE: The grace period is over.
         '
 
-        Public Const LA_GP_OVER       As Integer = 4
+        Public Const LA_GP_OVER As Integer = 4
 
         '
-        ' CODE: LA_E_INET
+        ' CODE: LA_T_EXPIRED
 
-        ' MESSAGE: Failed to connect to the server due to network error.
+        ' MESSAGE: The trial has expired or system time has been tampered
+        ' with. Ensure your date and time settings are correct.
         '
 
-        Public Const LA_E_INET		 As Integer = 5
+        Public Const LA_T_EXPIRED As Integer = 5
 
         '
-        ' CODE: LA_E_PKEY
+        ' CODE: LA_LT_EXPIRED
 
-        ' MESSAGE: Invalid product key.
+        ' MESSAGE: The local trial has expired or system time has been tampered
+        ' with. Ensure your date and time settings are correct.
         '
 
-        Public Const LA_E_PKEY		 As Integer = 6
+        Public Const LA_LT_EXPIRED As Integer = 6
 
         '
         ' CODE: LA_E_PFILE
@@ -721,7 +744,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid or corrupted product file.
         '
 
-        Public Const LA_E_PFILE		 As Integer = 7
+        Public Const LA_E_PFILE As Integer = 7
 
         '
         ' CODE: LA_E_FPATH
@@ -729,7 +752,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid product file path.
         '
 
-        Public Const LA_E_FPATH		 As Integer = 8
+        Public Const LA_E_FPATH As Integer = 8
 
         '
         ' CODE: LA_E_GUID
@@ -737,7 +760,7 @@ Namespace Cryptlex
         ' MESSAGE: The version GUID doesn't match that of the product file.
         '
 
-        Public Const LA_E_GUID		 As Integer = 9
+        Public Const LA_E_GUID As Integer = 9
 
         '
         ' CODE: LA_E_OFILE
@@ -745,7 +768,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid offline activation response file.
         '
 
-        Public Const LA_E_OFILE		 As Integer = 10
+        Public Const LA_E_OFILE As Integer = 10
 
         '
         ' CODE: LA_E_PERMISSION
@@ -754,7 +777,7 @@ Namespace Cryptlex
         ' but application is not run with admin privileges.
         '
 
-        Public Const LA_E_PERMISSION  As Integer = 11
+        Public Const LA_E_PERMISSION As Integer = 11
 
         '
         ' CODE: LA_E_EDATA_LEN
@@ -762,7 +785,7 @@ Namespace Cryptlex
         ' MESSAGE: Extra activation data length is more than 256 characters.
         '
 
-        Public Const LA_E_EDATA_LEN   As Integer = 12
+        Public Const LA_E_EDATA_LEN As Integer = 12
 
         '
         ' CODE: LA_E_PKEY_TYPE
@@ -770,7 +793,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid product key type.
         '
 
-        Public Const LA_E_PKEY_TYPE   As Integer = 13
+        Public Const LA_E_PKEY_TYPE As Integer = 13
 
         '
         ' CODE: LA_E_TIME
@@ -779,7 +802,7 @@ Namespace Cryptlex
         ' and time settings are correct.
         '
 
-        Public Const LA_E_TIME        As Integer = 14
+        Public Const LA_E_TIME As Integer = 14
 
         '
         ' CODE: LA_E_VM
@@ -789,7 +812,7 @@ Namespace Cryptlex
         ' but
         '
 
-        Public Const LA_E_VM          As Integer = 15
+        Public Const LA_E_VM As Integer = 15
 
         '
         ' CODE: LA_E_WMIC
@@ -799,7 +822,7 @@ Namespace Cryptlex
         ' to Windows only.
         '
 
-        Public Const LA_E_WMIC        As Integer = 16
+        Public Const LA_E_WMIC As Integer = 16
 
         '
         ' CODE: LA_E_TEXT_KEY
@@ -807,7 +830,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid trial extension key.
         '
 
-        Public Const LA_E_TEXT_KEY    As Integer = 17
+        Public Const LA_E_TEXT_KEY As Integer = 17
 
         '
         ' CODE: LA_E_OFILE_EXPIRED
@@ -815,25 +838,23 @@ Namespace Cryptlex
         ' MESSAGE: The offline activation response has expired.
         '
 
-        Public Const LA_E_OFILE_EXPIRED   As Integer = 18
+        Public Const LA_E_OFILE_EXPIRED As Integer = 18
 
         '
-        ' CODE: LA_T_EXPIRED
+        ' CODE: LA_E_INET
 
-        ' MESSAGE: The trial has expired or system time has been tampered
-        ' with. Ensure your date and time settings are correct.
+        ' MESSAGE: Failed to connect to the server due to network error.
         '
 
-        Public Const LA_T_EXPIRED      As Integer = 19
+        Public Const LA_E_INET As Integer = 19
 
         '
-        ' CODE: LA_LT_EXPIRED
+        ' CODE: LA_E_PKEY
 
-        ' MESSAGE: The local trial has expired or system time has been tampered
-        ' with. Ensure your date and time settings are correct.
+        ' MESSAGE: Invalid product key.
         '
 
-        Public Const LA_LT_EXPIRED     As Integer = 20
+        Public Const LA_E_PKEY As Integer = 20
 
         '
         ' CODE: LA_E_BUFFER_SIZE
@@ -841,7 +862,7 @@ Namespace Cryptlex
         ' MESSAGE: The buffer size was smaller than required.
         '
 
-        Public Const LA_E_BUFFER_SIZE   As Integer = 21
+        Public Const LA_E_BUFFER_SIZE As Integer = 21
 
         '
         ' CODE: LA_E_CUSTOM_FIELD_ID
@@ -849,7 +870,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid custom field id.
         '
 
-        Public Const LA_E_CUSTOM_FIELD_ID  As Integer = 22
+        Public Const LA_E_CUSTOM_FIELD_ID As Integer = 22
 
         '
         ' CODE: LA_E_NET_PROXY
@@ -857,7 +878,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid network proxy.
         '
 
-        Public Const LA_E_NET_PROXY   As Integer = 23
+        Public Const LA_E_NET_PROXY As Integer = 23
 
         '
         ' CODE: LA_E_HOST_URL
@@ -865,7 +886,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid Cryptlex host url.
         '
 
-        Public Const LA_E_HOST_URL  As Integer = 24
+        Public Const LA_E_HOST_URL As Integer = 24
 
         '
         ' CODE: LA_E_DEACT_LIMIT
@@ -873,7 +894,7 @@ Namespace Cryptlex
         ' MESSAGE: Deactivation limit for key has reached
         '
 
-        Public Const LA_E_DEACT_LIMIT   As Integer = 25
+        Public Const LA_E_DEACT_LIMIT As Integer = 25
 
         '
         ' CODE: LA_E_ACT_LIMIT
@@ -881,7 +902,7 @@ Namespace Cryptlex
         ' MESSAGE: Activation limit for key has reached
         '
 
-        Public Const LA_E_ACT_LIMIT    As Integer = 26
+        Public Const LA_E_ACT_LIMIT As Integer = 26
 
         '
         ' CODE: LA_E_PDATA
@@ -889,7 +910,7 @@ Namespace Cryptlex
         ' MESSAGE: Invalid product data
         '
 
-        Public Const LA_E_PDATA    As Integer = 27
+        Public Const LA_E_PDATA As Integer = 27
 
         '
         ' CODE: LA_E_TRIAL_NOT_EXPIRED
@@ -897,7 +918,7 @@ Namespace Cryptlex
         ' MESSAGE: Trial has not expired.
         '
 
-        Public Const LA_E_TRIAL_NOT_EXPIRED  As Integer = 28
+        Public Const LA_E_TRIAL_NOT_EXPIRED As Integer = 28
 
         '
         ' CODE: LA_E_COUNTRY
@@ -905,7 +926,7 @@ Namespace Cryptlex
         ' MESSAGE: Country is not allowed
         '
 
-        Public Const LA_E_COUNTRY   As Integer = 29
+        Public Const LA_E_COUNTRY As Integer = 29
 
         '
         ' CODE: LA_E_IP
@@ -913,7 +934,7 @@ Namespace Cryptlex
         ' MESSAGE: IP address is not allowed
         '
 
-        Public Const LA_E_IP   As Integer = 30
+        Public Const LA_E_IP As Integer = 30
 
         '
         ' CODE: LA_E_FILE_PERMISSION
@@ -921,7 +942,15 @@ Namespace Cryptlex
         ' MESSAGE: No permission to write to file
         '
 
-        Public Const LA_E_FILE_PERMISSION  As Integer = 31
+        Public Const LA_E_FILE_PERMISSION As Integer = 31
+
+        '
+        ' CODE: LA_E_LOCAL_TRIAL_NOT_EXPIRED
+
+        ' MESSAGE: Trial has not expired.
+        '
+
+        Public Const LA_E_LOCAL_TRIAL_NOT_EXPIRED As Integer = 32
 
         '
         ' CODE: LA_E_SERVER
@@ -929,7 +958,7 @@ Namespace Cryptlex
         ' MESSAGE: Server error
         '
 
-        Public Const LA_E_SERVER  As Integer = 32
+        Public Const LA_E_SERVER As Integer = 33
 
         '
         ' CODE: LA_E_CLIENT
@@ -937,239 +966,247 @@ Namespace Cryptlex
         ' MESSAGE: Client error
         '
 
-        Public Const LA_E_CLIENT     As Integer = 33
+        Public Const LA_E_CLIENT As Integer = 34
 
 
         Private NotInheritable Class Native
 
-                Private Sub New()
-                End Sub
+            Private Sub New()
+            End Sub
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductFile(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductFile(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductData(productData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductData(productData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductVersionGuid(versionGuid As String, flags As PermissionFlags) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductVersionGuid(versionGuid As String, flags As PermissionFlags) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductKey(productKey As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductKey(productKey As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetActivationExtraData(extraData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetActivationExtraData(extraData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetTrialActivationExtraData(extraData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetTrialActivationExtraData(extraData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetNetworkProxy(proxy As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetNetworkProxy(proxy As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetAppVersion(appVersion As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetAppVersion(appVersion As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKey(productKey As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKey(productKey As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKeyEmail(productKeyEmail As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKeyEmail(productKeyEmail As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKeyExpiryDate(ByRef expiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKeyExpiryDate(ByRef expiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKeyCustomField(fieldId As String, fieldValue As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKeyCustomField(fieldId As String, fieldValue As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetActivationExtraData(extraData As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetActivationExtraData(extraData As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialActivationExtraData(extraData As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialActivationExtraData(extraData As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateProduct() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateProduct() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateProductOffline(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateProductOffline(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineActivationRequest(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineActivationRequest(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function DeactivateProduct() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function DeactivateProduct() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineDeactivationRequest(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineDeactivationRequest(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsProductGenuine() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsProductGenuine() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsProductActivated() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsProductActivated() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateTrial() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateTrial() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsTrialGenuine() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsTrialGenuine() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ExtendTrial(trialExtensionKey As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ExtendTrial(trialExtensionKey As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLocalTrial(trialLength As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLocalTrial(trialLength As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLocalTrialGenuine() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLocalTrialGenuine() As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ExtendLocalTrial(trialExtensionLength As UInteger) As Integer
+            End Function
 
 #If LA_ANY_CPU Then
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductFile", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductFile_x64(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductFile", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductFile_x64(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductData", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductData_x64(productData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductData", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductData_x64(productData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductVersionGuid", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductVersionGuid_x64(versionGuid As String, flags As PermissionFlags) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductVersionGuid", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductVersionGuid_x64(versionGuid As String, flags As PermissionFlags) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductKey", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductKey_x64(productKey As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductKey", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductKey_x64(productKey As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetActivationExtraData_x64(extraData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetActivationExtraData_x64(extraData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetTrialActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetTrialActivationExtraData_x64(extraData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetTrialActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetTrialActivationExtraData_x64(extraData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetNetworkProxy", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetNetworkProxy_x64(proxy As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetNetworkProxy", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetNetworkProxy_x64(proxy As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetAppVersion", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetAppVersion_x64(appVersion As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetAppVersion", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetAppVersion_x64(appVersion As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKey", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKey_x64(productKey As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKey", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKey_x64(productKey As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKeyEmail", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKeyEmail_x64(productKeyEmail As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKeyEmail", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKeyEmail_x64(productKeyEmail As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKeyExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKeyExpiryDate_x64(ByRef expiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKeyExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKeyExpiryDate_x64(ByRef expiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKeyCustomField", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductKeyCustomField_x64(fieldId As String, fieldValue As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductKeyCustomField", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductKeyCustomField_x64(fieldId As String, fieldValue As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetActivationExtraData_x64(extraData As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetActivationExtraData_x64(extraData As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialActivationExtraData_x64(extraData As StringBuilder, length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialActivationExtraData", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialActivationExtraData_x64(extraData As StringBuilder, length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLocalTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLocalTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLocalTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLocalTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateProduct", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateProduct_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateProduct", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateProduct_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateProductOffline", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateProductOffline_x64(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateProductOffline", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateProductOffline_x64(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineActivationRequest", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineActivationRequest_x64(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineActivationRequest", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineActivationRequest_x64(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="DeactivateProduct", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function DeactivateProduct_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="DeactivateProduct", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function DeactivateProduct_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineDeactivationRequest", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineDeactivationRequest_x64(filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineDeactivationRequest", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineDeactivationRequest_x64(filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsProductGenuine", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsProductGenuine_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsProductGenuine", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsProductGenuine_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsProductActivated", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsProductActivated_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsProductActivated", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsProductActivated_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateTrial", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateTrial_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateTrial_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsTrialGenuine_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsTrialGenuine_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ExtendTrial", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ExtendTrial_x64(trialExtensionKey As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ExtendTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ExtendTrial_x64(trialExtensionKey As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLocalTrial_x64(trialLength As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLocalTrial_x64(trialLength As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLocalTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLocalTrialGenuine_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLocalTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLocalTrialGenuine_x64() As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ExtendLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ExtendLocalTrial_x64(trialExtensionLength As UInteger) As Integer
+            End Function
 
 #End If
         End Class
