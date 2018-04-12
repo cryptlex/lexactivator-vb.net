@@ -6,74 +6,71 @@ Public Class Form1
 
         InitializeComponent()
         Dim status As Integer
-        ' status = LexActivator.SetProductFile("ABSOLUTE_PATH_OF_PRODUCT.DAT_FILE")
         status = LexActivator.SetProductData("PASTE_CONTENT_OF_PRODUCT.DAT_FILE")
-        If status <> LexActivator.LA_OK Then
+        If status <> LexActivator.StatusCodes.LA_OK Then
             Me.statusLabel.Text = "Error setting product file: " & status.ToString()
             Return
         End If
 
-        status = LexActivator.SetProductVersionGuid("PASTE_PRODUCT_VERSION_GUID", LexActivator.PermissionFlags.LA_USER)
-        If status <> LexActivator.LA_OK Then
-            Me.statusLabel.Text = "Error setting version GUID: " & status.ToString()
+        status = LexActivator.SetProductId("PASTE_PRODUCT_ID", LexActivator.PermissionFlags.LA_USER)
+        If status <> LexActivator.StatusCodes.LA_OK Then
+            Me.statusLabel.Text = "Error setting product id: " & status.ToString()
             Return
         End If
 
-        status = LexActivator.IsProductGenuine()
-        If status = LexActivator.LA_OK OrElse status = LexActivator.LA_EXPIRED OrElse status = LexActivator.LA_REVOKED OrElse status = LexActivator.LA_GP_OVER Then
-            ' Dim expiryDate As UInteger = 0
-            ' LexActivator.GetProductKeyExpiryDate(expiryDate)
-            ' Dim daysLeft As Integer = CInt((expiryDate - unixTimestamp())) / 86500
-            Me.statusLabel.Text = "Product genuinely activated! Activation Status: " & status.ToString()
+        status = LexActivator.IsLicenseGenuine()
+        If status = LexActivator.StatusCodes.LA_OK OrElse status = LexActivator.StatusCodes.LA_EXPIRED OrElse status = LexActivator.StatusCodes.LA_SUSPENDED OrElse status = LexActivator.StatusCodes.LA_GRACE_PERIOD_OVER Then
+            Me.statusLabel.Text = "License genuinely activated! Activation Status: " & status.ToString()
             Me.activateBtn.Text = "Deactivate"
             Me.activateTrialBtn.Enabled = False
             Return
         End If
 
         status = LexActivator.IsTrialGenuine()
-        If status = LexActivator.LA_OK Then
+        If status = LexActivator.StatusCodes.LA_OK Then
             Dim trialExpiryDate As UInteger = 0
             LexActivator.GetTrialExpiryDate(trialExpiryDate)
             Dim daysLeft As Integer = CInt((trialExpiryDate - unixTimestamp())) / 86500
             Me.statusLabel.Text = "Trial period! Days left:" & daysLeft.ToString()
             Me.activateTrialBtn.Enabled = False
-        ElseIf status = LexActivator.LA_T_EXPIRED Then
+        ElseIf status = LexActivator.StatusCodes.LA_TRIAL_EXPIRED Then
             Me.statusLabel.Text = "Trial has expired!"
         Else
             Me.statusLabel.Text = "Trial has not started or has been tampered: " & status.ToString()
         End If
 
     End Sub
+
     Public Sub activateBtn_Click(sender As Object, e As EventArgs) Handles activateBtn.Click
         Dim status As Integer
         If Me.activateBtn.Text = "Deactivate" Then
-            status = LexActivator.DeactivateProduct()
-            If status = LexActivator.LA_OK Then
-                Me.statusLabel.Text = "Product deactivated successfully"
+            status = LexActivator.DeactivateLicense()
+            If status = LexActivator.StatusCodes.LA_OK Then
+                Me.statusLabel.Text = "License deactivated successfully"
                 Me.activateBtn.Text = "Activate"
                 Me.activateTrialBtn.Enabled = True
                 Return
             End If
 
-            Me.statusLabel.Text = "Error deactivating product: " & status.ToString()
+            Me.statusLabel.Text = "Error deactivating license: " & status.ToString()
             Return
         End If
 
-        status = LexActivator.SetProductKey(productKeyBox.Text)
-        If status <> LexActivator.LA_OK Then
-            Me.statusLabel.Text = "Error setting product key: " & status.ToString()
+        status = LexActivator.SetLicenseKey(productKeyBox.Text)
+        If status <> LexActivator.StatusCodes.LA_OK Then
+            Me.statusLabel.Text = "Error setting license key: " & status.ToString()
             Return
         End If
 
-        status = LexActivator.SetActivationExtraData("SAMPLE DATA")
-        If status <> LexActivator.LA_OK Then
-            Me.statusLabel.Text = "Error setting activation extra data: " & status.ToString()
+        status = LexActivator.SetActivationMetadata("key1", "value1")
+        If status <> LexActivator.StatusCodes.LA_OK Then
+            Me.statusLabel.Text = "Error setting activation metadata: " & status.ToString()
             Return
         End If
 
-        status = LexActivator.ActivateProduct()
-        If status <> LexActivator.LA_OK Then
-            Me.statusLabel.Text = "Error activating the product: " & status.ToString()
+        status = LexActivator.ActivateLicense()
+        If status <> LexActivator.StatusCodes.LA_OK Then
+            Me.statusLabel.Text = "Error activating the license: " & status.ToString()
             Return
         Else
             Me.statusLabel.Text = "Activation Successful"
@@ -84,14 +81,14 @@ Public Class Form1
 
     Public Sub activateTrialBtn_Click(sender As Object, e As EventArgs) Handles activateTrialBtn.Click
         Dim status As Integer
-        status = LexActivator.SetTrialActivationExtraData("SAMPLE DATA")
-        If status <> LexActivator.LA_OK Then
-            Me.statusLabel.Text = "Error setting activation extra data: " & status.ToString()
+        status = LexActivator.SetTrialActivationMetadata("key2", "value2")
+        If status <> LexActivator.StatusCodes.LA_OK Then
+            Me.statusLabel.Text = "Error setting activation metadata: " & status.ToString()
             Return
         End If
 
         status = LexActivator.ActivateTrial()
-        If status <> LexActivator.LA_OK Then
+        If status <> LexActivator.StatusCodes.LA_OK Then
             Me.statusLabel.Text = "Error activating the trial: " & status.ToString()
             Return
         Else
