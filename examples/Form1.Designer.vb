@@ -36,7 +36,7 @@ Partial Class Form1
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(68, 13)
         Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Product Key:"
+        Me.Label1.Text = "License Key:"
         '
         'activateBtn
         '

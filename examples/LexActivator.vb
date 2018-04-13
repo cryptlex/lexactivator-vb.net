@@ -143,9 +143,9 @@ Namespace Cryptlex
         '
         Public Shared Function SetActivationMetadata(ByVal key As String, ByVal value As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetActivationMetadata_x64(extraData), Native.SetActivationMetadata(extraData))
+		Return If(IntPtr.Size = 8, Native.SetActivationMetadata_x64(key, value), Native.SetActivationMetadata(key, value))
 #Else
-                Return Native.SetActivationMetadata(extraData)
+            Return Native.SetActivationMetadata(key, value)
 #End If
         End Function
 
@@ -166,9 +166,9 @@ Namespace Cryptlex
         '
         Public Shared Function SetTrialActivationMetadata(ByVal key As String, ByVal value As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetTrialActivationMetadata_x64(extraData), Native.SetTrialActivationMetadata(extraData))
+		Return If(IntPtr.Size = 8, Native.SetTrialActivationMetadata_x64(key, value), Native.SetTrialActivationMetadata(key, value))
 #Else
-                Return Native.SetTrialActivationMetadata(extraData)
+            Return Native.SetTrialActivationMetadata(key, value)
 #End If
         End Function
 
@@ -294,9 +294,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetLicenseExpiryDate(ByRef expiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLicenseKeyExpiryDate_x64(expiryDate), Native.GetLicenseKeyExpiryDate(expiryDate))
+            Return If(IntPtr.Size = 8, Native.GetLicenseExpiryDate_x64(expiryDate), Native.GetLicenseExpiryDate(expiryDate))
 #Else
-                Return Native.GetLicenseKeyExpiryDate(expiryDate)
+            Return Native.GetLicenseExpiryDate(expiryDate)
 #End If
         End Function
 
@@ -427,9 +427,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetTrialId(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetTrialId_x64(trialId), Native.GetTrialId(trialId))
+		Return If(IntPtr.Size = 8, Native.GetTrialId_x64(trialId, length), Native.GetTrialId(trialId, length))
 #Else
-                Return Native.GetTrialId(trialId)
+            Return Native.GetTrialId(trialId, length)
 #End If
         End Function
 
@@ -621,11 +621,11 @@ Namespace Cryptlex
 
         '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
         '
-        Public Shared IncrementLicenseUsage(ByVal increment As UInteger) As Integer
+        Public Shared Function IncrementLicenseUsage(ByVal increment As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.IncrementLicenseUsage_x64(increment), Native.IncrementLicenseUsage(increment))
 #Else
-                Return Native.IncrementLicenseUsage(increment)
+            Return Native.IncrementLicenseUsage(increment)
 #End If
         End Function
 
