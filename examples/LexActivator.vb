@@ -12,7 +12,7 @@ Namespace Cryptlex
 
         '
         '     In order to use "Any CPU" configuration, rename 64 bit LexActivator.dll to LexActivator64.dll
-        '     and add "LA_ANY_CPU" conditional compilation symbol.
+        '     and uncomment following "LA_ANY_CPU" conditional compilation symbol.
         '        
         '     #Const LA_ANY_CPU = 1
         '
@@ -37,12 +37,11 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * filePath - absolute path of the product file (Product.dat)
 
-        '     RETURN CODES: LA_OK, LA_E_FPATH, LA_E_PFILE
+        '     RETURN CODES: LA_OK, LA_E_FILE_PATH, LA_E_PRODUCT_FILE
 
         '     NOTE: If this function fails to set the path of product file, none of the
         '     other functions will work.
         '
-
         Public Shared Function SetProductFile(ByVal filePath As String) As Integer
 #If LA_ANY_CPU Then
 	        Return If(IntPtr.Size = 8, Native.SetProductFile_x64(filePath), Native.SetProductFile(filePath))
@@ -65,7 +64,7 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * productData - content of the Product.dat file
 
-        '     RETURN CODES: LA_OK, LA_E_PDATA
+        '     RETURN CODES: RETURN CODES: LA_OK, LA_E_PRODUCT_DATA
 
         '     NOTE: If this function fails to set the product data, none of the
         '     other functions will work.
@@ -79,25 +78,26 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: SetProductVersionGuid()
+        '     FUNCTION: SetProductId()
 
-        '     PURPOSE: Sets the version GUID of your application.
+        '     PURPOSE: Sets the product id of your application.
 
         '     This function must be called on every start of your program before
         '     any other functions are called, with the exception of SetProductFile()
         '     or SetProductData() function.
 
         '     PARAMETERS:
-        '     * versionGuid - the unique version GUID of your application as mentioned
-        '     on the product version page of your application in the dashboard.
+        '     * productId - the unique product id of your application as mentioned
+        '     on the product page of your application in the dashboard.
 
         '     * flags - depending upon whether your application requires admin/root
         '     permissions to run or not, this parameter can have one of the following
         '     values: LA_SYSTEM, LA_USER
 
-        '     RETURN CODES: LA_OK, LA_E_WMIC, LA_E_PFILE, LA_E_PDATA, LA_E_GUID, LA_E_PERMISSION
+        '     RETURN CODES: LA_OK, LA_E_WMIC, LA_E_PRODUCT_FILE, LA_E_PRODUCT_DATA, LA_E_PRODUCT_ID,
+        '     LA_E_SYSTEM_PERMISSION
 
-        '     NOTE: If this function fails to set the version GUID, none of the other
+        '     NOTE: If this function fails to set the product id, none of the other
         '     functions will work.
         '
         Public Shared Function SetProductId(ByVal productId As String, ByVal flags As PermissionFlags) As Integer
@@ -111,14 +111,13 @@ Namespace Cryptlex
         '
         '     FUNCTION: SetLicenseKey()
 
-        '     PURPOSE: Sets the product key required to activate the application.
+        '     PURPOSE: Sets the license key required to activate the license.
 
         '     PARAMETERS:
-        '     * licenseKey - a valid product key generated for the application.
+        '     * licenseKey - a valid license key.
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_E_PKEY
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY
         '
-
         Public Shared Function SetLicenseKey(licenseKey As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.SetLicenseKey_x64(licenseKey), Native.SetLicenseKey(licenseKey))
@@ -130,18 +129,18 @@ Namespace Cryptlex
         '
         '     FUNCTION: SetActivationMetadata()
 
-        '     PURPOSE: Sets the extra data which you may want to fetch from the user
-        '     at the time of activation.
+        '     PURPOSE: Sets the activation metadata.
 
-        '     The extra data appears along with the activation details of the product key
+        '     The  metadata appears along with the activation details of the license
         '     in dashboard.
 
         '     PARAMETERS:
-        '     * extraData - string of maximum length 1024 characters with utf-8 encoding.
+        '     * key - string of maximum length 256 characters with utf-8 encoding.
+        '     * value - string of maximum length 256 characters with utf-8 encoding.
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_E_EDATA_LEN
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_METADATA_KEY_LENGTH,
+        '     LA_E_METADATA_VALUE_LENGTH, LA_E_ACTIVATION_METADATA_LIMIT
         '
-
         Public Shared Function SetActivationMetadata(ByVal key As String, ByVal value As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.SetActivationMetadata_x64(extraData), Native.SetActivationMetadata(extraData))
@@ -153,17 +152,18 @@ Namespace Cryptlex
         '
         '     FUNCTION: SetTrialActivationMetadata()
 
-        '     PURPOSE: Sets the extra data which you may want to fetch from the user
-        '     at the time of trial activation.
+        '     PURPOSE: Sets the trial activation metadata.
 
-        '     The extra data appears along with the trial activation details in dashboard.
+        '     The  metadata appears along with the trial activation details of the product
+        '     in dashboard.
 
         '     PARAMETERS:
-        '     * extraData - string of maximum length 1024 characters with utf-8 encoding.
+        '     * key - string of maximum length 256 characters with utf-8 encoding.
+        '     * value - string of maximum length 256 characters with utf-8 encoding.
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_E_EDATA_LEN
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_LENGTH,
+        '     LA_E_METADATA_VALUE_LENGTH, LA_E_TRIAL_ACTIVATION_METADATA_LIMIT
         '
-
         Public Shared Function SetTrialActivationMetadata(ByVal key As String, ByVal value As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.SetTrialActivationMetadata_x64(extraData), Native.SetTrialActivationMetadata(extraData))
@@ -173,26 +173,18 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: SetNetworkProxy()
+        '     FUNCTION: SetAppVersion()
 
-        '     PURPOSE: Sets the network proxy to be used when contacting Cryptlex servers.
+        '     PURPOSE: Sets the current app version of your application.
 
-        '     The proxy format should be: [protocol://][username:password@]machine[:port]
-
-        '     Following are some examples of the valid proxy strings:
-        '         - http://127.0.0.1:8000/
-        '         - http://user:pass@127.0.0.1:8000/
-        '         - socks5://127.0.0.1:8000/
+        '     The app version appears along with the activation details in dashboard. It
+        '     is also used to generate app analytics.
 
         '     PARAMETERS:
-        '     * proxy - proxy string having correct proxy format
+        '     * appVersion - string of maximum length 256 characters with utf-8 encoding.
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_E_NET_PROXY
-
-        '     NOTE: Proxy settings of the computer are automatically detected. So, in most of the
-        '     cases you don't need to care whether your user is behind a proxy server or not.
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_APP_VERSION_LENGTH
         '
-
         Public Shared Function SetAppVersion(ByVal appVersion As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.SetAppVersion_x64(appVersion), Native.SetAppVersion(appVersion))
@@ -216,12 +208,11 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * proxy - proxy string having correct proxy format
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_E_NET_PROXY
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_NET_PROXY
 
         '     NOTE: Proxy settings of the computer are automatically detected. So, in most of the
         '     cases you don't need to care whether your user is behind a proxy server or not.
         '
-
         Public Shared Function SetNetworkProxy(proxy As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.SetNetworkProxy_x64(proxy), Native.SetNetworkProxy(proxy))
@@ -231,17 +222,19 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetAppVersion()
+        '     FUNCTION: GetProductMetadata()
 
-        '     PURPOSE: Gets the app version of the product as set in the dashboard.
+        '     PURPOSE: Gets the product metadata as set in the dashboard.
+
+        '     This is available for trial as well as license activations.
 
         '     PARAMETERS:
-        '     * appVersion - pointer to a buffer that receives the value of the string
-        '     * length - size of the buffer pointed to by the appVersion parameter
+        '     * key - key to retrieve the value
+        '     * value - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetProductMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetProductMetadata_x64(key, value, length), Native.GetProductMetadata(key, value, length))
@@ -251,17 +244,17 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetAppVersion()
+        '     FUNCTION: GetLicenseMetadata()
 
-        '     PURPOSE: Gets the app version of the product as set in the dashboard.
+        '     PURPOSE: Gets the license metadata as set in the dashboard.
 
         '     PARAMETERS:
-        '     * appVersion - pointer to a buffer that receives the value of the string
-        '     * length - size of the buffer pointed to by the appVersion parameter
+        '     * key - key to retrieve the value
+        '     * value - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetLicenseMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLicenseMetadata_x64(key, value, length), Native.GetLicenseMetadata(key, value, length))
@@ -273,15 +266,14 @@ Namespace Cryptlex
         '
         '     FUNCTION: GetLicenseKey()
 
-        '     PURPOSE: Gets the stored product key which was used for activation.
+        '     PURPOSE: Gets the license key used for activation.
 
         '     PARAMETERS:
         '     * licenseKey - pointer to a buffer that receives the value of the string
         '     * length - size of the buffer pointed to by the licenseKey parameter
 
-        '     RETURN CODES: LA_OK, LA_E_PKEY, LA_E_GUID, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetLicenseKey(licenseKey As StringBuilder, length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLicenseKey_x64(licenseKey, length), Native.GetLicenseKey(licenseKey, length))
@@ -291,16 +283,15 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetLicenseKeyExpiryDate()
+        '     FUNCTION: GetLicenseExpiryDate()
 
-        '     PURPOSE: Gets the product key expiry date timestamp.
+        '     PURPOSE: Gets the license expiry date timestamp.
 
         '     PARAMETERS:
         '     * expiryDate - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
         '
-
         Public Shared Function GetLicenseExpiryDate(ByRef expiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLicenseKeyExpiryDate_x64(expiryDate), Native.GetLicenseKeyExpiryDate(expiryDate))
@@ -310,16 +301,15 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetLicenseKeyExpiryDate()
+        '     FUNCTION: GetLicenseUsageCount()
 
-        '     PURPOSE: Gets the product key expiry date timestamp.
+        '     PURPOSE: Gets the license usage count.
 
         '     PARAMETERS:
-        '     * expiryDate - pointer to the integer that receives the value
+        '     * totalUses - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
         '
-
         Public Shared Function GetLicenseUsageCount(ByRef totalUses As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLicenseUsageCount_x64(totalUses), Native.GetLicenseUsageCount(totalUses))
@@ -331,15 +321,14 @@ Namespace Cryptlex
         '
         '     FUNCTION: GetLicenseUserEmail()
 
-        '     PURPOSE: Gets the email associated with product key used for activation.
+        '     PURPOSE: Gets the email associated with license user.
 
         '     PARAMETERS:
         '     * licenseKey - pointer to a buffer that receives the value of the string
-        '     * length - size of the buffer pointed to by the licenseKeyEmail parameter
+        '     * length - size of the buffer pointed to by the email parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetLicenseUserEmail(ByVal email As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLicenseUserEmail_x64(email, length), Native.GetLicenseUserEmail(email, length))
@@ -349,17 +338,16 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetLicenseUserEmail()
+        '     FUNCTION: GetLicenseUserName()
 
-        '     PURPOSE: Gets the email associated with product key used for activation.
+        '     PURPOSE: Gets the name associated with license user.
 
         '     PARAMETERS:
-        '     * licenseKey - pointer to a buffer that receives the value of the string
-        '     * length - size of the buffer pointed to by the licenseKeyEmail parameter
+        '     * name - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the name parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetLicenseUserName(ByVal name As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLicenseUserName_x64(name, length), Native.GetLicenseUserName(name, length))
@@ -369,17 +357,17 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetActivationExtraData()
+        '     FUNCTION: GetActivationMetadata()
 
-        '     PURPOSE: Gets the value of the activation extra data.
+        '     PURPOSE: Gets the activation metadata.
 
         '     PARAMETERS:
-        '     * extraData - pointer to a buffer that receives the value of the string
-        '     * length - size of the buffer pointed to by the fieldValue parameter
+        '     * key - key to retrieve the value
+        '     * value - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetActivationMetadata_x64(key, value, length), Native.GetActivationMetadata(key, value, length))
@@ -389,17 +377,17 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetTrialActivationExtraData()
+        '     FUNCTION: GetTrialActivationMetadata()
 
-        '     PURPOSE: Gets the value of the trial activation extra data.
+        '     PURPOSE: Gets the trial activation metadata.
 
         '     PARAMETERS:
-        '     * extraData - pointer to a buffer that receives the value of the string
-        '     * length - size of the buffer pointed to by the fieldValue parameter
+        '     * key - key to retrieve the value
+        '     * value - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
         '
-
         Public Shared Function GetTrialActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetTrialActivationMetadata_x64(key, value, length), Native.GetTrialActivationMetadata(key, value, length))
@@ -416,10 +404,8 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialExpiryDate - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
         '
-
-
         Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetTrialExpiryDate_x64(trialExpiryDate), Native.GetTrialExpiryDate(trialExpiryDate))
@@ -429,17 +415,16 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetTrialExpiryDate()
+        '     FUNCTION: GetTrialId()
 
-        '     PURPOSE: Gets the trial expiry date timestamp.
+        '     PURPOSE: Gets the trial activation id. Used in case of trial extension.
 
         '     PARAMETERS:
-        '     * trialExpiryDate - pointer to the integer that receives the value
+        '     * trialId - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_BUFFER_SIZE
         '
-
-
         Public Shared Function GetTrialId(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetTrialId_x64(trialId), Native.GetTrialId(trialId))
@@ -456,9 +441,8 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialExpiryDate - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_E_GUID, LA_FAIL, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
         '
-
         Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GetLocalTrialExpiryDate_x64(trialExpiryDate), Native.GetLocalTrialExpiryDate(trialExpiryDate))
@@ -470,18 +454,17 @@ Namespace Cryptlex
         '
         '     FUNCTION: ActivateLicense()
 
-        '     PURPOSE: Activates your application by contacting the Cryptlex servers. It
+        '     PURPOSE: Activates the license by contacting the Cryptlex servers. It
         '     validates the key and returns with encrypted and digitally signed token
         '     which it stores and uses to activate your application.
 
         '     This function should be executed at the time of registration, ideally on
         '     a button click.
 
-        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_REVOKED, LA_FAIL, LA_E_GUID, LA_E_PKEY,
-        '     LA_E_INET, LA_E_VM, LA_E_TIME, LA_E_ACT_LIMIT, LA_E_SERVER, LA_E_CLIENT,
-        '     LA_E_PKEY_TYPE, LA_E_COUNTRY, LA_E_IP
+        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_E_REVOKED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY,
+        '     LA_E_INET, LA_E_VM, LA_E_TIME, LA_E_ACTIVATION_LIMIT, LA_E_SERVER, LA_E_CLIENT, LA_USAGE_LIMIT_REACHED
+        '     LA_E_LICENSE_TYPE, LA_E_COUNTRY, LA_E_IP, LA_E_RATE_LIMIT
         '
-
         Public Shared Function ActivateLicense() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.ActivateLicense_x64(), Native.ActivateLicense())
@@ -494,16 +477,14 @@ Namespace Cryptlex
         '
         '     FUNCTION: ActivateLicenseOffline()
 
-        '     PURPOSE: Activates your application using the offline activation response
-        '     file.
+        '     PURPOSE: Activates your licenses using the offline activation response file.
 
         '     PARAMETERS:
         '     * filePath - path of the offline activation response file.
 
-        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_FAIL, LA_E_GUID, LA_E_PKEY, LA_E_OFILE
-        '     LA_E_VM, LA_E_TIME, LA_E_FPATH, LA_E_OFILE_EXPIRED
+        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_OFFLINE_RESPONSE_FILE
+        '     LA_E_VM, LA_E_TIME, LA_E_FILE_PATH, LA_E_OFFLINE_RESPONSE_FILE_EXPIRED
         '
-
         Public Shared Function ActivateLicenseOffline(filePath As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.ActivateLicenseOffline_x64(filePath), Native.ActivateLicenseOffline(filePath))
@@ -521,9 +502,8 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * filePath - path of the file for the offline request.
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_GUID, LA_E_PKEY, LA_E_FILE_PERMISSION
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_FILE_PERMISSION
         '
-
         Public Shared Function GenerateOfflineActivationRequest(filePath As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GenerateOfflineActivationRequest_x64(filePath), Native.GenerateOfflineActivationRequest(filePath))
@@ -535,16 +515,15 @@ Namespace Cryptlex
         '
         '     FUNCTION: DeactivateLicense()
 
-        '     PURPOSE: Deactivates the application and frees up the corresponding activation
+        '     PURPOSE: Deactivates the license activation and frees up the corresponding activation
         '     slot by contacting the Cryptlex servers.
 
         '     This function should be executed at the time of de-registration, ideally on
         '     a button click.
 
-        '     RETURN CODES: LA_OK, LA_E_DEACT_LIMIT, LA_FAIL, LA_E_GUID, LA_E_TIME
-        '     LA_E_PKEY, LA_E_INET, LA_E_SERVER, LA_E_CLIENT
+        '     RETURN CODES: LA_OK, LA_E_DEACTIVATION_LIMIT, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     LA_E_LICENSE_KEY, LA_E_INET, LA_E_SERVER, LA_E_RATE_LIMIT
         '
-
         Public Shared Function DeactivateLicense() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.DeactivateLicense_x64(), Native.DeactivateLicense())
@@ -557,18 +536,17 @@ Namespace Cryptlex
         '     FUNCTION: GenerateOfflineDeactivationRequest()
 
         '     PURPOSE: Generates the offline deactivation request needed for deactivation of
-        '     the product key in the dashboard and deactivates the application.
+        '     the license in the dashboard and deactivates the license locally.
 
-        '     A valid offline deactivation file confirms that the application has been successfully
+        '     A valid offline deactivation file confirms that the license has been successfully
         '     deactivated on the user's machine.
 
         '     PARAMETERS:
         '     * filePath - path of the file for the offline request.
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_GUID, LA_E_PKEY, LA_E_FILE_PERMISSION,
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_FILE_PERMISSION,
         '     LA_E_TIME
         '
-
         Public Shared Function GenerateOfflineDeactivationRequest(filePath As String) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.GenerateOfflineDeactivationRequest_x64(filePath), Native.GenerateOfflineDeactivationRequest(filePath))
@@ -589,18 +567,17 @@ Namespace Cryptlex
         '     key.
 
         '     In case server sync fails due to network error, and it continues to fail for fixed
-        '     number of days (grace period), the function returns LA_GP_OVER instead of LA_OK.
+        '     number of days (grace period), the function returns LA_GRACE_PERIOD_OVER instead of LA_OK.
 
         '     This function must be called on every start of your program to verify the activation
         '     of your app.
 
-        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_REVOKED, LA_GP_OVER, LA_FAIL, LA_E_GUID, LA_E_PKEY,
-        '     LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_GRACE_PERIOD_OVER, LA_FAIL,
+        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME, LA_USAGE_LIMIT_REACHED
 
-        '     NOTE: If application was activated offline using ActivateLicenseOffline() function, you
+        '     NOTE: If application was activated offline using ActivateProductOffline() function, you
         '     may want to set grace period to 0 to ignore grace period.
         '
-
         Public Shared Function IsLicenseGenuine() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.IsLicenseGenuine_x64(), Native.IsLicenseGenuine())
@@ -619,12 +596,11 @@ Namespace Cryptlex
         '     This is just an auxiliary function which you may use in some specific cases, when you
         '     want to skip the server sync.
 
-        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_REVOKED, LA_GP_OVER, LA_FAIL, LA_E_GUID, LA_E_PKEY,
-        '     LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_GRACE_PERIOD_OVER, LA_FAIL,
+        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME, LA_USAGE_LIMIT_REACHED
 
         '     NOTE: You may want to set grace period to 0 to ignore grace period.
         '
-
         Public Shared Function IsLicenseValid() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.IsLicenseValid_x64(), Native.IsLicenseValid())
@@ -635,18 +611,17 @@ Namespace Cryptlex
 
 
         '
-        '     FUNCTION: ActivateTrial()
+        '     FUNCTION: IncrementLicenseUsage()
 
-        '     PURPOSE: Starts the verified trial in your application by contacting the
-        '     Cryptlex servers.
+        '     PURPOSE: Increments the usage count of the license.
 
-        '     This function should be executed when your application starts first time on
-        '     the user's computer, ideally on a button click.
+        '     If increment is more than allowed uses it has no effect.
 
-        '     RETURN CODES: LA_OK, LA_T_EXPIRED, LA_FAIL, LA_E_GUID, LA_E_INET,
-        '     LA_E_VM, LA_E_TIME, LA_E_SERVER, LA_E_CLIENT, LA_E_COUNTRY, LA_E_IP
+        '     PARAMETERS:
+        '     * increment - the increment to add to the usage count
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
         '
-
         Public Shared IncrementLicenseUsage(ByVal increment As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.IncrementLicenseUsage_x64(increment), Native.IncrementLicenseUsage(increment))
@@ -665,10 +640,9 @@ Namespace Cryptlex
         '     This function should be executed when your application starts first time on
         '     the user's computer, ideally on a button click.
 
-        '     RETURN CODES: LA_OK, LA_T_EXPIRED, LA_FAIL, LA_E_GUID, LA_E_INET,
-        '     LA_E_VM, LA_E_TIME, LA_E_SERVER, LA_E_CLIENT, LA_E_COUNTRY, LA_E_IP
+        '     RETURN CODES: LA_OK, LA_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_INET,
+        '     LA_E_VM, LA_E_TIME, LA_E_SERVER, LA_E_CLIENT, LA_E_COUNTRY, LA_E_IP, LA_E_RATE_LIMIT
         '
-
         Public Shared Function ActivateTrial() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.ActivateTrial_x64(), Native.ActivateTrial())
@@ -686,10 +660,8 @@ Namespace Cryptlex
 
         '     This function must be called on every start of your program during the trial period.
 
-        '     RETURN CODES: LA_OK, LA_T_EXPIRED, LA_FAIL, LA_E_TIME, LA_E_GUID
-
+        '     RETURN CODES: LA_OK, LA_TRIAL_EXPIRED, LA_FAIL, LA_E_TIME, LA_E_PRODUCT_ID
         '
-
         Public Shared Function IsTrialGenuine() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.IsTrialGenuine_x64(), Native.IsTrialGenuine())
@@ -704,16 +676,15 @@ Namespace Cryptlex
         '     PURPOSE: Starts the local(unverified) trial.
 
         '     This function should be executed when your application starts first time on
-        '     the user's computer, ideally on a button click.
+        '     the user's computer.
 
         '     PARAMETERS:
         '     * trialLength - trial length in days
 
-        '     RETURN CODES: LA_OK, LA_LT_EXPIRED, LA_FAIL, LA_E_GUID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_LOCAL_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
 
-        '     NOTE: The function is only meant for unverified trials.
+        '     NOTE: The function is only meant for local(unverified) trials.
         '
-
         Public Shared Function ActivateLocalTrial(trialLength As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.ActivateLocalTrial_x64(trialLength), Native.ActivateLocalTrial(trialLength))
@@ -721,7 +692,6 @@ Namespace Cryptlex
                 Return Native.ActivateLocalTrial(trialLength)
 #End If
         End Function
-
 
         '
         '     FUNCTION: IsLocalTrialGenuine()
@@ -731,11 +701,10 @@ Namespace Cryptlex
 
         '     This function must be called on every start of your program during the trial period.
 
-        '     RETURN CODES: LA_OK, LA_LT_EXPIRED, LA_FAIL, LA_E_GUID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_LOCAL_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
 
-        '     NOTE: The function is only meant for unverified trials.
+        '     NOTE: The function is only meant for local(unverified) trials.
         '
-
         Public Shared Function IsLocalTrialGenuine() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.IsLocalTrialGenuine_x64(), Native.IsLocalTrialGenuine())
@@ -752,11 +721,10 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialExtensionLength - number of days to extend the trial
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_GUID, LA_E_TIME, LA_E_LOCAL_TRIAL_NOT_EXPIRED
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_LOCAL_TRIAL_NOT_EXPIRED
 
-        '     NOTE: The function is only meant for unverified trials.
+        '     NOTE: The function is only meant for local(unverified) trials.
         '
-
         Public Shared Function ExtendLocalTrial(trialExtensionLength As UInteger) As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.ExtendLocalTrial_x64(trialExtensionLength), Native.ExtendLocalTrial(trialExtensionLength))
@@ -766,18 +734,16 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: ExtendLocalTrial()
+        '     FUNCTION: Reset()
 
-        '     PURPOSE: Extends the local trial.
+        '     PURPOSE: Resets the activation and trial data stored in the machine.
 
-        '     PARAMETERS:
-        '     * trialExtensionLength - number of days to extend the trial
+        '     This function is meant for developer testing only.
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_GUID, LA_E_TIME, LA_E_LOCAL_TRIAL_NOT_EXPIRED
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID
 
-        '     NOTE: The function is only meant for unverified trials.
+        '     NOTE: The function does not reset local(unverified) trial data.
         '
-
         Public Shared Function Reset() As Integer
 #If LA_ANY_CPU Then
 		Return If(IntPtr.Size = 8, Native.Reset_x64(), Native.Reset())
@@ -957,7 +923,7 @@ Namespace Cryptlex
             LA_E_LICENSE_KEY = 54
 
             '
-            '    CODE: LA_E_LICENSE_KEY_TYPE
+            '    CODE: LA_E_LICENSE_TYPE
 
             '    MESSAGE: Invalid license type. Make sure floating license
             '    is not being used.
