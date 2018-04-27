@@ -301,24 +301,6 @@ Namespace Cryptlex
         End Function
 
         '
-        '     FUNCTION: GetLicenseUsageCount()
-
-        '     PURPOSE: Gets the license usage count.
-
-        '     PARAMETERS:
-        '     * totalUses - pointer to the integer that receives the value
-
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
-        '
-        Public Shared Function GetLicenseUsageCount(ByRef totalUses As UInteger) As Integer
-#If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLicenseUsageCount_x64(totalUses), Native.GetLicenseUsageCount(totalUses))
-#Else
-                Return Native.GetLicenseUsageCount(totalUses)
-#End If
-        End Function
-
-        '
         '     FUNCTION: GetLicenseUserEmail()
 
         '     PURPOSE: Gets the email associated with license user.
@@ -461,8 +443,8 @@ Namespace Cryptlex
         '     This function should be executed at the time of registration, ideally on
         '     a button click.
 
-        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_E_REVOKED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY,
-        '     LA_E_INET, LA_E_VM, LA_E_TIME, LA_E_ACTIVATION_LIMIT, LA_E_SERVER, LA_E_CLIENT, LA_USAGE_LIMIT_REACHED
+        '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_E_REVOKED, LA_FAIL, LA_E_PRODUCT_ID,
+        '     LA_E_INET, LA_E_VM, LA_E_TIME, LA_E_ACTIVATION_LIMIT, LA_E_SERVER, LA_E_CLIENT, LA_E_LICENSE_KEY,
         '     LA_E_LICENSE_TYPE, LA_E_COUNTRY, LA_E_IP, LA_E_RATE_LIMIT
         '
         Public Shared Function ActivateLicense() As Integer
@@ -483,7 +465,7 @@ Namespace Cryptlex
         '     * filePath - path of the offline activation response file.
 
         '     RETURN CODES: LA_OK, LA_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_OFFLINE_RESPONSE_FILE
-        '     LA_E_VM, LA_E_TIME, LA_E_FILE_PATH, LA_E_OFFLINE_RESPONSE_FILE_EXPIRED, LA_USAGE_LIMIT_REACHED
+        '     LA_E_VM, LA_E_TIME, LA_E_FILE_PATH, LA_E_OFFLINE_RESPONSE_FILE_EXPIRED
         '
         Public Shared Function ActivateLicenseOffline(filePath As String) As Integer
 #If LA_ANY_CPU Then
@@ -572,7 +554,7 @@ Namespace Cryptlex
         '     of your app.
 
         '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_GRACE_PERIOD_OVER, LA_FAIL,
-        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME, LA_USAGE_LIMIT_REACHED
+        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME
 
         '     NOTE: If application was activated offline using ActivateLicenseOffline() function, you
         '     may want to set grace period to 0 to ignore grace period.
@@ -596,7 +578,7 @@ Namespace Cryptlex
         '     want to skip the server sync.
 
         '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_GRACE_PERIOD_OVER, LA_FAIL,
-        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME, LA_USAGE_LIMIT_REACHED
+        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME
 
         '     NOTE: You may want to set grace period to 0 to ignore grace period.
         '
@@ -607,28 +589,6 @@ Namespace Cryptlex
                 Return Native.IsLicenseValid()
 #End If
         End Function
-
-
-        '
-        '     FUNCTION: IncrementLicenseUsage()
-
-        '     PURPOSE: Increments the usage count of the license.
-
-        '     If increment is more than allowed uses it has no effect.
-
-        '     PARAMETERS:
-        '     * increment - the increment to add to the usage count
-
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
-        '
-        Public Shared Function IncrementLicenseUsage(ByVal increment As UInteger) As Integer
-#If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.IncrementLicenseUsage_x64(increment), Native.IncrementLicenseUsage(increment))
-#Else
-            Return Native.IncrementLicenseUsage(increment)
-#End If
-        End Function
-
 
         '
         '     FUNCTION: ActivateTrial()
@@ -790,19 +750,12 @@ Namespace Cryptlex
             LA_GRACE_PERIOD_OVER = 22
 
             '
-            '    CODE: LA_USAGE_LIMIT_REACHED
-
-            '    MESSAGE: The license has reached it's allowed usage limit.
-            '
-            LA_USAGE_LIMIT_REACHED = 23
-
-            '
             '    CODE: LA_TRIAL_EXPIRED
 
             '    MESSAGE: The trial has expired or system time has been tampered
             '    with. Ensure your date and time settings are correct.
             '
-            LA_TRIAL_EXPIRED = 24
+            LA_TRIAL_EXPIRED = 25
 
             '
             '    CODE: LA_LOCAL_TRIAL_EXPIRED
@@ -810,7 +763,7 @@ Namespace Cryptlex
             '    MESSAGE: The local trial has expired or system time has been tampered
             '    with. Ensure your date and time settings are correct.
             '
-            LA_LOCAL_TRIAL_EXPIRED = 25
+            LA_LOCAL_TRIAL_EXPIRED = 26
 
             '
             '    CODE: LA_E_FILE_PATH
@@ -1118,10 +1071,6 @@ Namespace Cryptlex
                 End Function
 
                 <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseUsageCount(ByRef totalUses As UInteger) As Integer
-                End Function
-
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
                 Public Shared Function GetLicenseUserEmail(ByVal email As StringBuilder, ByVal length As Integer) As Integer
                 End Function
 
@@ -1175,10 +1124,6 @@ Namespace Cryptlex
 
                 <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
                 Public Shared Function IsLicenseValid() As Integer
-                End Function
-
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IncrementLicenseUsage(ByVal increment As UInteger) As Integer
                 End Function
 
                 <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
@@ -1255,10 +1200,6 @@ Namespace Cryptlex
                 Public Shared Function GetLicenseExpiryDate_x64(ByRef expiryDate As UInteger) As Integer
                 End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUsageCount", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseUsageCount_x64(ByRef totalUses As UInteger) As Integer
-                End Function
-
                 <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserEmail", CallingConvention:=CallingConvention.Cdecl)>
                 Public Shared Function GetLicenseUserEmail_x64(ByVal email As StringBuilder, ByVal length As Integer) As Integer
                 End Function
@@ -1313,10 +1254,6 @@ Namespace Cryptlex
 
                 <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLicenseValid", CallingConvention:=CallingConvention.Cdecl)>
                 Public Shared Function IsLicenseValid_x64() As Integer
-                End Function
-
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IncrementLicenseUsage", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IncrementLicenseUsage_x64(ByVal increment As UInteger) As Integer
                 End Function
 
                 <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateTrial", CallingConvention:=CallingConvention.Cdecl)>

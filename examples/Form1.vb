@@ -68,14 +68,13 @@ Public Class Form1
             Return
         End If
 
-        status = LexActivator.ActivateLicense()
-        If status <> LexActivator.StatusCodes.LA_OK Then
-            Me.statusLabel.Text = "Error activating the license: " & status.ToString()
-            Return
-        Else
-            Me.statusLabel.Text = "Activation Successful"
+        If status = LexActivator.StatusCodes.LA_OK OrElse status = LexActivator.StatusCodes.LA_EXPIRED OrElse status = LexActivator.StatusCodes.LA_SUSPENDED Then
+            Me.statusLabel.Text = "Activation Successful: " & status.ToString()
             Me.activateBtn.Text = "Deactivate"
             Me.activateTrialBtn.Enabled = False
+        Else
+            Me.statusLabel.Text = "Error activating the license: " & status.ToString()
+            Return
         End If
     End Sub
 
