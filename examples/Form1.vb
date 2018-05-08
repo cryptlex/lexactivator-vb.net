@@ -67,7 +67,8 @@ Public Class Form1
             Me.statusLabel.Text = "Error setting activation metadata: " & status.ToString()
             Return
         End If
-
+        
+        status = LexActivator.ActivateLicense()
         If status = LexActivator.StatusCodes.LA_OK OrElse status = LexActivator.StatusCodes.LA_EXPIRED OrElse status = LexActivator.StatusCodes.LA_SUSPENDED Then
             Me.statusLabel.Text = "Activation Successful: " & status.ToString()
             Me.activateBtn.Text = "Deactivate"
