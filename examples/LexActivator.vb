@@ -44,9 +44,9 @@ Namespace Cryptlex
         '
         Public Shared Function SetProductFile(ByVal filePath As String) As Integer
 #If LA_ANY_CPU Then
-	        Return If(IntPtr.Size = 8, Native.SetProductFile_x64(filePath), Native.SetProductFile(filePath))
+            Return If(IntPtr.Size = 8, Native.SetProductFile_x64(filePath), Native.SetProductFile(filePath))
 #Else
-                Return Native.SetProductFile(filePath)
+            Return Native.SetProductFile(filePath)
 #End If
         End Function
 
@@ -71,9 +71,9 @@ Namespace Cryptlex
         '
         Public Shared Function SetProductData(productData As String) As Integer
 #If LA_ANY_CPU Then
-	        Return If(IntPtr.Size = 8, Native.SetProductData_x64(productData), Native.SetProductData(productData))
+            Return If(IntPtr.Size = 8, Native.SetProductData_x64(productData), Native.SetProductData(productData))
 #Else
-                Return Native.SetProductData(productData)
+            Return Native.SetProductData(productData)
 #End If
         End Function
 
@@ -102,10 +102,10 @@ Namespace Cryptlex
         '
         Public Shared Function SetProductId(ByVal productId As String, ByVal flags As PermissionFlags) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetProductId_x64(productId, flags), Native.SetProductId(productId, flags))
+            Return If(IntPtr.Size = 8, Native.SetProductId_x64(productId, flags), Native.SetProductId(productId, flags))
 #Else
-                Return Native.SetProductId(productId, flags)
-#End If 
+            Return Native.SetProductId(productId, flags)
+#End If
         End Function
 
         '
@@ -120,9 +120,38 @@ Namespace Cryptlex
         '
         Public Shared Function SetLicenseKey(licenseKey As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetLicenseKey_x64(licenseKey), Native.SetLicenseKey(licenseKey))
+            Return If(IntPtr.Size = 8, Native.SetLicenseKey_x64(licenseKey), Native.SetLicenseKey(licenseKey))
 #Else
-                Return Native.SetLicenseKey(licenseKey)
+            Return Native.SetLicenseKey(licenseKey)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: SetLicenseCallback()
+
+        '     PURPOSE: Sets server sync callback Function.
+
+        '     Whenever the server sync occurs In a separate thread, And server returns the response,
+        '     license callback Function gets invoked With the following status codes:
+        '     LA_OK, LA_EXPIRED, LA_SUSPENDED,
+        '     LA_E_REVOKED, LA_E_ACTIVATION_NOT_FOUND, LA_E_MACHINE_FINGERPRINT
+        '     LA_E_COUNTRY, LA_E_INET, LA_E_SERVER, LA_E_RATE_LIMIT, LA_E_IP
+
+        '     PARAMETERS:
+        '     * callback - name of the callback function
+
+        '     Return CODES :  LA_OK, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY
+        '        
+        Public Shared Function SetLicenseCallback(callback As CallbackType) As Integer
+            Dim wrappedCallback = callback
+            Dim syncTarget = TryCast(callback.Target, System.Windows.Forms.Control)
+            If syncTarget IsNot Nothing Then
+                wrappedCallback = Function(v) syncTarget.Invoke(callback, New Object() {v})
+            End If
+#If LF_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.SetLicenseCallback_x64(wrappedCallback), Native.SetLicenseCallback(wrappedCallback))
+#Else
+            Return Native.SetLicenseCallback(wrappedCallback)
 #End If
         End Function
 
@@ -143,7 +172,7 @@ Namespace Cryptlex
         '
         Public Shared Function SetActivationMetadata(ByVal key As String, ByVal value As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetActivationMetadata_x64(key, value), Native.SetActivationMetadata(key, value))
+            Return If(IntPtr.Size = 8, Native.SetActivationMetadata_x64(key, value), Native.SetActivationMetadata(key, value))
 #Else
             Return Native.SetActivationMetadata(key, value)
 #End If
@@ -166,7 +195,7 @@ Namespace Cryptlex
         '
         Public Shared Function SetTrialActivationMetadata(ByVal key As String, ByVal value As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetTrialActivationMetadata_x64(key, value), Native.SetTrialActivationMetadata(key, value))
+            Return If(IntPtr.Size = 8, Native.SetTrialActivationMetadata_x64(key, value), Native.SetTrialActivationMetadata(key, value))
 #Else
             Return Native.SetTrialActivationMetadata(key, value)
 #End If
@@ -187,9 +216,9 @@ Namespace Cryptlex
         '
         Public Shared Function SetAppVersion(ByVal appVersion As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetAppVersion_x64(appVersion), Native.SetAppVersion(appVersion))
+            Return If(IntPtr.Size = 8, Native.SetAppVersion_x64(appVersion), Native.SetAppVersion(appVersion))
 #Else
-                Return Native.SetAppVersion(appVersion)
+            Return Native.SetAppVersion(appVersion)
 #End If
         End Function
 
@@ -215,9 +244,9 @@ Namespace Cryptlex
         '
         Public Shared Function SetNetworkProxy(proxy As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.SetNetworkProxy_x64(proxy), Native.SetNetworkProxy(proxy))
+            Return If(IntPtr.Size = 8, Native.SetNetworkProxy_x64(proxy), Native.SetNetworkProxy(proxy))
 #Else
-                Return Native.SetNetworkProxy(proxy)
+            Return Native.SetNetworkProxy(proxy)
 #End If
         End Function
 
@@ -237,9 +266,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetProductMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetProductMetadata_x64(key, value, length), Native.GetProductMetadata(key, value, length))
+            Return If(IntPtr.Size = 8, Native.GetProductMetadata_x64(key, value, length), Native.GetProductMetadata(key, value, length))
 #Else
-                Return Native.GetProductMetadata(key, value, length)
+            Return Native.GetProductMetadata(key, value, length)
 #End If
         End Function
 
@@ -257,9 +286,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetLicenseMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLicenseMetadata_x64(key, value, length), Native.GetLicenseMetadata(key, value, length))
+            Return If(IntPtr.Size = 8, Native.GetLicenseMetadata_x64(key, value, length), Native.GetLicenseMetadata(key, value, length))
 #Else
-                Return Native.GetLicenseMetadata(key, value, length)
+            Return Native.GetLicenseMetadata(key, value, length)
 #End If
         End Function
 
@@ -276,9 +305,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetLicenseKey(licenseKey As StringBuilder, length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLicenseKey_x64(licenseKey, length), Native.GetLicenseKey(licenseKey, length))
+            Return If(IntPtr.Size = 8, Native.GetLicenseKey_x64(licenseKey, length), Native.GetLicenseKey(licenseKey, length))
 #Else
-                Return Native.GetLicenseKey(licenseKey, length)
+            Return Native.GetLicenseKey(licenseKey, length)
 #End If
         End Function
 
@@ -313,9 +342,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetLicenseUserEmail(ByVal email As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLicenseUserEmail_x64(email, length), Native.GetLicenseUserEmail(email, length))
+            Return If(IntPtr.Size = 8, Native.GetLicenseUserEmail_x64(email, length), Native.GetLicenseUserEmail(email, length))
 #Else
-                Return Native.GetLicenseUserEmail(email, length)
+            Return Native.GetLicenseUserEmail(email, length)
 #End If
         End Function
 
@@ -332,9 +361,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetLicenseUserName(ByVal name As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLicenseUserName_x64(name, length), Native.GetLicenseUserName(name, length))
+            Return If(IntPtr.Size = 8, Native.GetLicenseUserName_x64(name, length), Native.GetLicenseUserName(name, length))
 #Else
-                Return Native.GetLicenseUserName(name, length)
+            Return Native.GetLicenseUserName(name, length)
 #End If
         End Function
 
@@ -352,9 +381,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetActivationMetadata_x64(key, value, length), Native.GetActivationMetadata(key, value, length))
+            Return If(IntPtr.Size = 8, Native.GetActivationMetadata_x64(key, value, length), Native.GetActivationMetadata(key, value, length))
 #Else
-                Return Native.GetActivationMetadata(key, value, length)
+            Return Native.GetActivationMetadata(key, value, length)
 #End If
         End Function
 
@@ -372,9 +401,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetTrialActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetTrialActivationMetadata_x64(key, value, length), Native.GetTrialActivationMetadata(key, value, length))
+            Return If(IntPtr.Size = 8, Native.GetTrialActivationMetadata_x64(key, value, length), Native.GetTrialActivationMetadata(key, value, length))
 #Else
-                Return Native.GetTrialActivationMetadata(key, value, length)
+            Return Native.GetTrialActivationMetadata(key, value, length)
 #End If
         End Function
 
@@ -390,9 +419,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetTrialExpiryDate_x64(trialExpiryDate), Native.GetTrialExpiryDate(trialExpiryDate))
+            Return If(IntPtr.Size = 8, Native.GetTrialExpiryDate_x64(trialExpiryDate), Native.GetTrialExpiryDate(trialExpiryDate))
 #Else
-                Return Native.GetTrialExpiryDate(trialExpiryDate)
+            Return Native.GetTrialExpiryDate(trialExpiryDate)
 #End If
         End Function
 
@@ -409,7 +438,7 @@ Namespace Cryptlex
         '
         Public Shared Function GetTrialId(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetTrialId_x64(trialId, length), Native.GetTrialId(trialId, length))
+            Return If(IntPtr.Size = 8, Native.GetTrialId_x64(trialId, length), Native.GetTrialId(trialId, length))
 #Else
             Return Native.GetTrialId(trialId, length)
 #End If
@@ -427,9 +456,9 @@ Namespace Cryptlex
         '
         Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GetLocalTrialExpiryDate_x64(trialExpiryDate), Native.GetLocalTrialExpiryDate(trialExpiryDate))
+            Return If(IntPtr.Size = 8, Native.GetLocalTrialExpiryDate_x64(trialExpiryDate), Native.GetLocalTrialExpiryDate(trialExpiryDate))
 #Else
-                Return Native.GetLocalTrialExpiryDate(trialExpiryDate)
+            Return Native.GetLocalTrialExpiryDate(trialExpiryDate)
 #End If
         End Function
 
@@ -449,9 +478,9 @@ Namespace Cryptlex
         '
         Public Shared Function ActivateLicense() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.ActivateLicense_x64(), Native.ActivateLicense())
+            Return If(IntPtr.Size = 8, Native.ActivateLicense_x64(), Native.ActivateLicense())
 #Else
-                Return Native.ActivateLicense()
+            Return Native.ActivateLicense()
 #End If
 
         End Function
@@ -469,9 +498,9 @@ Namespace Cryptlex
         '
         Public Shared Function ActivateLicenseOffline(filePath As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.ActivateLicenseOffline_x64(filePath), Native.ActivateLicenseOffline(filePath))
+            Return If(IntPtr.Size = 8, Native.ActivateLicenseOffline_x64(filePath), Native.ActivateLicenseOffline(filePath))
 #Else
-                Return Native.ActivateLicenseOffline(filePath)
+            Return Native.ActivateLicenseOffline(filePath)
 #End If
         End Function
 
@@ -488,9 +517,9 @@ Namespace Cryptlex
         '
         Public Shared Function GenerateOfflineActivationRequest(filePath As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GenerateOfflineActivationRequest_x64(filePath), Native.GenerateOfflineActivationRequest(filePath))
+            Return If(IntPtr.Size = 8, Native.GenerateOfflineActivationRequest_x64(filePath), Native.GenerateOfflineActivationRequest(filePath))
 #Else
-                Return Native.GenerateOfflineActivationRequest(filePath)
+            Return Native.GenerateOfflineActivationRequest(filePath)
 #End If
         End Function
 
@@ -508,9 +537,9 @@ Namespace Cryptlex
         '
         Public Shared Function DeactivateLicense() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.DeactivateLicense_x64(), Native.DeactivateLicense())
+            Return If(IntPtr.Size = 8, Native.DeactivateLicense_x64(), Native.DeactivateLicense())
 #Else
-                Return Native.DeactivateLicense()
+            Return Native.DeactivateLicense()
 #End If
         End Function
 
@@ -531,9 +560,9 @@ Namespace Cryptlex
         '
         Public Shared Function GenerateOfflineDeactivationRequest(filePath As String) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.GenerateOfflineDeactivationRequest_x64(filePath), Native.GenerateOfflineDeactivationRequest(filePath))
+            Return If(IntPtr.Size = 8, Native.GenerateOfflineDeactivationRequest_x64(filePath), Native.GenerateOfflineDeactivationRequest(filePath))
 #Else
-                Return Native.GenerateOfflineDeactivationRequest(filePath)
+            Return Native.GenerateOfflineDeactivationRequest(filePath)
 #End If
         End Function
 
@@ -561,9 +590,9 @@ Namespace Cryptlex
         '
         Public Shared Function IsLicenseGenuine() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.IsLicenseGenuine_x64(), Native.IsLicenseGenuine())
+            Return If(IntPtr.Size = 8, Native.IsLicenseGenuine_x64(), Native.IsLicenseGenuine())
 #Else
-                Return Native.IsLicenseGenuine()
+            Return Native.IsLicenseGenuine()
 #End If
         End Function
 
@@ -584,9 +613,9 @@ Namespace Cryptlex
         '
         Public Shared Function IsLicenseValid() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.IsLicenseValid_x64(), Native.IsLicenseValid())
+            Return If(IntPtr.Size = 8, Native.IsLicenseValid_x64(), Native.IsLicenseValid())
 #Else
-                Return Native.IsLicenseValid()
+            Return Native.IsLicenseValid()
 #End If
         End Function
 
@@ -604,9 +633,9 @@ Namespace Cryptlex
         '
         Public Shared Function ActivateTrial() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.ActivateTrial_x64(), Native.ActivateTrial())
+            Return If(IntPtr.Size = 8, Native.ActivateTrial_x64(), Native.ActivateTrial())
 #Else
-                Return Native.ActivateTrial()
+            Return Native.ActivateTrial()
 #End If
         End Function
 
@@ -623,9 +652,9 @@ Namespace Cryptlex
         '
         Public Shared Function IsTrialGenuine() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.IsTrialGenuine_x64(), Native.IsTrialGenuine())
+            Return If(IntPtr.Size = 8, Native.IsTrialGenuine_x64(), Native.IsTrialGenuine())
 #Else
-                Return Native.IsTrialGenuine()
+            Return Native.IsTrialGenuine()
 #End If
         End Function
 
@@ -646,9 +675,9 @@ Namespace Cryptlex
         '
         Public Shared Function ActivateLocalTrial(trialLength As UInteger) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.ActivateLocalTrial_x64(trialLength), Native.ActivateLocalTrial(trialLength))
+            Return If(IntPtr.Size = 8, Native.ActivateLocalTrial_x64(trialLength), Native.ActivateLocalTrial(trialLength))
 #Else
-                Return Native.ActivateLocalTrial(trialLength)
+            Return Native.ActivateLocalTrial(trialLength)
 #End If
         End Function
 
@@ -666,9 +695,9 @@ Namespace Cryptlex
         '
         Public Shared Function IsLocalTrialGenuine() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.IsLocalTrialGenuine_x64(), Native.IsLocalTrialGenuine())
+            Return If(IntPtr.Size = 8, Native.IsLocalTrialGenuine_x64(), Native.IsLocalTrialGenuine())
 #Else
-                Return Native.IsLocalTrialGenuine()
+            Return Native.IsLocalTrialGenuine()
 #End If
         End Function
 
@@ -686,9 +715,9 @@ Namespace Cryptlex
         '
         Public Shared Function ExtendLocalTrial(trialExtensionLength As UInteger) As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.ExtendLocalTrial_x64(trialExtensionLength), Native.ExtendLocalTrial(trialExtensionLength))
+            Return If(IntPtr.Size = 8, Native.ExtendLocalTrial_x64(trialExtensionLength), Native.ExtendLocalTrial(trialExtensionLength))
 #Else
-                Return Native.ExtendLocalTrial(trialExtensionLength)
+            Return Native.ExtendLocalTrial(trialExtensionLength)
 #End If
         End Function
 
@@ -705,14 +734,14 @@ Namespace Cryptlex
         '
         Public Shared Function Reset() As Integer
 #If LA_ANY_CPU Then
-		Return If(IntPtr.Size = 8, Native.Reset_x64(), Native.Reset())
+            Return If(IntPtr.Size = 8, Native.Reset_x64(), Native.Reset())
 #Else
-                Return Native.Reset()
+            Return Native.Reset()
 #End If
-        End Function      
+        End Function
 
         Public Enum StatusCodes As UInteger
-            
+
             '
             '    CODE: LA_OK
 
@@ -908,7 +937,7 @@ Namespace Cryptlex
 
             '    MESSAGE: The license activation was deleted on the server.
             '
-            LA_E_ACTIVATION_NOT_FOUND = 59,
+            LA_E_ACTIVATION_NOT_FOUND = 59
 
             '
             '    CODE: LA_E_DEACTIVATION_LIMIT
@@ -1017,268 +1046,282 @@ Namespace Cryptlex
             LA_E_CLIENT = 92
         End Enum
 
+        <UnmanagedFunctionPointer(CallingConvention.Cdecl)>
+        Public Delegate Sub CallbackType(status As UInteger)
+
+        ' To prevent garbage collection of delegate, need to keep a reference 
+        Shared licenseCallback As CallbackType
+
         Private NotInheritable Class Native
 
-                Private Sub New()
-                End Sub
+            Private Sub New()
+            End Sub
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductFile(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductFile(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductData(ByVal productData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductData(ByVal productData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductId(ByVal productId As String, ByVal flags As PermissionFlags) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductId(ByVal productId As String, ByVal flags As PermissionFlags) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetLicenseKey(ByVal licenseKey As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetLicenseKey(ByVal licenseKey As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetActivationMetadata(ByVal key As String, ByVal value As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetLicenseCallback(callback As CallbackType) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetTrialActivationMetadata(ByVal key As String, ByVal value As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetActivationMetadata(ByVal key As String, ByVal value As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetAppVersion(ByVal appVersion As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetTrialActivationMetadata(ByVal key As String, ByVal value As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetNetworkProxy(ByVal proxy As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetAppVersion(ByVal appVersion As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetNetworkProxy(ByVal proxy As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseKey(ByVal licenseKey As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseExpiryDate(ByRef expiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseKey(ByVal licenseKey As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseUserEmail(ByVal email As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseExpiryDate(ByRef expiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseUserName(ByVal name As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserEmail(ByVal email As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserName(ByVal name As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialId(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialId(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLicense() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLicenseOffline(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLicense() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineActivationRequest(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLicenseOffline(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function DeactivateLicense() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineActivationRequest(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineDeactivationRequest(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function DeactivateLicense() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLicenseGenuine() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineDeactivationRequest(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLicenseValid() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLicenseGenuine() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateTrial() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLicenseValid() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsTrialGenuine() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateTrial() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLocalTrial(ByVal trialLength As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsTrialGenuine() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLocalTrialGenuine() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLocalTrial(ByVal trialLength As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ExtendLocalTrial(ByVal trialExtensionLength As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLocalTrialGenuine() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function Reset() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ExtendLocalTrial(ByVal trialExtensionLength As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function Reset() As Integer
+            End Function
 
 
 #If LA_ANY_CPU Then
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductFile", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductFile_x64(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductFile", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductFile_x64(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductData", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductData_x64(ByVal productData As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductData", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductData_x64(ByVal productData As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductId", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetProductId_x64(ByVal productId As String, ByVal flags As PermissionFlags) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetProductId", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetProductId_x64(ByVal productId As String, ByVal flags As PermissionFlags) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseKey", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetLicenseKey_x64(ByVal licenseKey As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseKey", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetLicenseKey_x64(ByVal licenseKey As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetActivationMetadata_x64(ByVal key As String, ByVal value As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseCallback", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetLicenseCallback_x64(handle As UInteger, callback As CallbackType) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetTrialActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetTrialActivationMetadata_x64(ByVal key As String, ByVal value As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetActivationMetadata_x64(ByVal key As String, ByVal value As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetAppVersion", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetAppVersion_x64(ByVal appVersion As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetTrialActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetTrialActivationMetadata_x64(ByVal key As String, ByVal value As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetNetworkProxy", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function SetNetworkProxy_x64(ByVal proxy As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetAppVersion", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetAppVersion_x64(ByVal appVersion As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductMetadata", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetProductMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetNetworkProxy", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetNetworkProxy_x64(ByVal proxy As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseMetadata", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetProductMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetProductMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseKey", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseKey_x64(ByVal licenseKey As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseExpiryDate_x64(ByRef expiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseKey", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseKey_x64(ByVal licenseKey As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserEmail", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseUserEmail_x64(ByVal email As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseExpiryDate_x64(ByRef expiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserName", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLicenseUserName_x64(ByVal name As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserEmail", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserEmail_x64(ByVal email As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetActivationMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserName", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserName_x64(ByVal name As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialActivationMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetActivationMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialActivationMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialId", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetTrialId_x64(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLocalTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GetLocalTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialId", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetTrialId_x64(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLicense", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLicense_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLocalTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLocalTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLicenseOffline", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLicenseOffline_x64(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLicense", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLicense_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineActivationRequest", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineActivationRequest_x64(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLicenseOffline", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLicenseOffline_x64(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="DeactivateLicense", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function DeactivateLicense_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineActivationRequest", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineActivationRequest_x64(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineDeactivationRequest", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function GenerateOfflineDeactivationRequest_x64(ByVal filePath As String) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="DeactivateLicense", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function DeactivateLicense_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLicenseGenuine", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLicenseGenuine_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GenerateOfflineDeactivationRequest", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GenerateOfflineDeactivationRequest_x64(ByVal filePath As String) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLicenseValid", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLicenseValid_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLicenseGenuine", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLicenseGenuine_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateTrial", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateTrial_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLicenseValid", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLicenseValid_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsTrialGenuine_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateTrial_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ActivateLocalTrial_x64(ByVal trialLength As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsTrialGenuine_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLocalTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function IsLocalTrialGenuine_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ActivateLocalTrial_x64(ByVal trialLength As UInteger) As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ExtendLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function ExtendLocalTrial_x64(ByVal trialExtensionLength As UInteger) As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IsLocalTrialGenuine", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IsLocalTrialGenuine_x64() As Integer
+            End Function
 
-                <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="Reset", CallingConvention:=CallingConvention.Cdecl)>
-                Public Shared Function Reset_x64() As Integer
-                End Function
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ExtendLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ExtendLocalTrial_x64(ByVal trialExtensionLength As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="Reset", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function Reset_x64() As Integer
+            End Function
 
 #End If
         End Class

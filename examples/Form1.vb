@@ -17,7 +17,12 @@ Public Class Form1
             Me.statusLabel.Text = "Error setting product id: " & status.ToString()
             Return
         End If
-
+        ' Setting license callback is recommended for floating licenses
+        'status = LexActivator.SetLicenseCallback(AddressOf LicenseCallback)
+        'If status <> LexActivator.StatusCodes.LA_OK Then
+        '    Me.statusLabel.Text = "Error setting callback function: " & status.ToString()
+        '    Return
+        'End If
         status = LexActivator.IsLicenseGenuine()
         If status = LexActivator.StatusCodes.LA_OK OrElse status = LexActivator.StatusCodes.LA_EXPIRED OrElse status = LexActivator.StatusCodes.LA_SUSPENDED OrElse status = LexActivator.StatusCodes.LA_GRACE_PERIOD_OVER Then
             Me.statusLabel.Text = "License genuinely activated! Activation Status: " & status.ToString()
@@ -94,6 +99,16 @@ Public Class Form1
         Else
             Me.statusLabel.Text = "Trial started Successful"
         End If
+    End Sub
+
+    Private Sub LicenseCallback(ByVal status As UInteger)
+        ' NOTE: Don't invoke IsLicenseGenuine(), ActivateLicense() or ActivateTrial() API functions in this callback
+        Select Case status
+            Case LexActivator.StatusCodes.LA_SUSPENDED
+                Me.statusLabel.Text = "The license has been suspended."
+            Case Else
+                Me.statusLabel.Text = "License status code: " & status.ToString()
+        End Select
     End Sub
 
     Private Function unixTimestamp() As UInteger
