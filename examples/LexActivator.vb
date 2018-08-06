@@ -319,7 +319,7 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * expiryDate - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED
         '
         Public Shared Function GetLicenseExpiryDate(ByRef expiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
@@ -338,7 +338,8 @@ Namespace Cryptlex
         '     * licenseKey - pointer to a buffer that receives the value of the string
         '     * length - size of the buffer pointed to by the email parameter
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED,
+        '     LA_E_BUFFER_SIZE
         '
         Public Shared Function GetLicenseUserEmail(ByVal email As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
@@ -357,7 +358,8 @@ Namespace Cryptlex
         '     * name - pointer to a buffer that receives the value of the string
         '     * length - size of the buffer pointed to by the name parameter
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED,
+        '     LA_E_BUFFER_SIZE
         '
         Public Shared Function GetLicenseUserName(ByVal name As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
@@ -415,7 +417,7 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialExpiryDate - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED
         '
         Public Shared Function GetTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
@@ -434,7 +436,8 @@ Namespace Cryptlex
         '     * trialId - pointer to a buffer that receives the value of the string
         '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED,
+        '     LA_E_BUFFER_SIZE
         '
         Public Shared Function GetTrialId(ByVal trialId As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
@@ -452,7 +455,7 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialExpiryDate - pointer to the integer that receives the value
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME_MODIFIED
         '
         Public Shared Function GetLocalTrialExpiryDate(ByRef trialExpiryDate As UInteger) As Integer
 #If LA_ANY_CPU Then
@@ -533,7 +536,7 @@ Namespace Cryptlex
         '     a button click.
 
         '     RETURN CODES: LA_OK, LA_E_DEACTIVATION_LIMIT, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
-        '     LA_E_LICENSE_KEY, LA_E_INET, LA_E_SERVER, LA_E_RATE_LIMIT
+        '     LA_E_LICENSE_KEY, LA_E_INET, LA_E_SERVER, LA_E_RATE_LIMIT, LA_E_TIME_MODIFIED
         '
         Public Shared Function DeactivateLicense() As Integer
 #If LA_ANY_CPU Then
@@ -556,7 +559,7 @@ Namespace Cryptlex
         '     * filePath - path of the file for the offline request.
 
         '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_FILE_PERMISSION,
-        '     LA_E_TIME
+        '     LA_E_TIME, LA_E_TIME_MODIFIED
         '
         Public Shared Function GenerateOfflineDeactivationRequest(filePath As String) As Integer
 #If LA_ANY_CPU Then
@@ -583,7 +586,7 @@ Namespace Cryptlex
         '     of your app.
 
         '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_GRACE_PERIOD_OVER, LA_FAIL,
-        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME
+        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME, LA_E_TIME_MODIFIED
 
         '     NOTE: If application was activated offline using ActivateLicenseOffline() function, you
         '     may want to set grace period to 0 to ignore grace period.
@@ -607,7 +610,7 @@ Namespace Cryptlex
         '     want to skip the server sync.
 
         '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_GRACE_PERIOD_OVER, LA_FAIL,
-        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME
+        '     LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_TIME, LA_E_TIME_MODIFIED
 
         '     NOTE: You may want to set grace period to 0 to ignore grace period.
         '
@@ -648,7 +651,8 @@ Namespace Cryptlex
 
         '     This function must be called on every start of your program during the trial period.
 
-        '     RETURN CODES: LA_OK, LA_TRIAL_EXPIRED, LA_FAIL, LA_E_TIME, LA_E_PRODUCT_ID
+        '     RETURN CODES: LA_OK, LA_TRIAL_EXPIRED, LA_FAIL, LA_E_TIME, LA_E_PRODUCT_ID,
+        '     LA_E_TIME_MODIFIED
         '
         Public Shared Function IsTrialGenuine() As Integer
 #If LA_ANY_CPU Then
@@ -669,7 +673,7 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialLength - trial length in days
 
-        '     RETURN CODES: LA_OK, LA_LOCAL_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_LOCAL_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME_MODIFIED
 
         '     NOTE: The function is only meant for local(unverified) trials.
         '
@@ -689,7 +693,7 @@ Namespace Cryptlex
 
         '     This function must be called on every start of your program during the trial period.
 
-        '     RETURN CODES: LA_OK, LA_LOCAL_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_LOCAL_TRIAL_EXPIRED, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME_MODIFIED
 
         '     NOTE: The function is only meant for local(unverified) trials.
         '
@@ -709,7 +713,7 @@ Namespace Cryptlex
         '     PARAMETERS:
         '     * trialExtensionLength - number of days to extend the trial
 
-        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME_MODIFIED
 
         '     NOTE: The function is only meant for local(unverified) trials.
         '
@@ -849,8 +853,8 @@ Namespace Cryptlex
             '
             '    CODE: LA_E_TIME
 
-            '    MESSAGE: The system time has been tampered with. Ensure your date
-            '    and time settings are correct.
+            '    MESSAGE: The difference between the network time and the system time is
+            '    more than allowed clock offset.
             '
             LA_E_TIME = 47
 
@@ -947,11 +951,11 @@ Namespace Cryptlex
             LA_E_DEACTIVATION_LIMIT = 60
 
             '
-            '    CODE: LA_E_TRAIL_NOT_ALLOWED
+            '    CODE: LA_E_TRIAL_NOT_ALLOWED
 
             '    MESSAGE: Trial not allowed for the product.
             '
-            LA_E_TRAIL_NOT_ALLOWED = 61
+            LA_E_TRIAL_NOT_ALLOWED = 61
 
             '
             '    CODE: LA_E_TRIAL_ACTIVATION_LIMIT
@@ -1001,6 +1005,13 @@ Namespace Cryptlex
             '    MESSAGE: The metadata key does not exist.
             '
             LA_E_METADATA_KEY_NOT_FOUND = 68
+
+            '
+            '    CODE: LA_E_TIME_MODIFIED
+
+            '    MESSAGE: The system time has been tampered (backdated).
+            '
+            LA_E_TIME_MODIFIED = 69
 
             '
             '    CODE: LA_E_VM
