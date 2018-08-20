@@ -370,6 +370,26 @@ Namespace Cryptlex
         End Function
 
         '
+        '     FUNCTION: GetLicenseType()
+
+        '     PURPOSE: Gets the license type (node-locked or hosted-floating).
+
+        '     PARAMETERS:
+        '     * name - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the licenseType parameter
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED,
+        '     LA_E_BUFFER_SIZE
+        '
+        Public Shared Function GetLicenseType(ByVal licenseType As StringBuilder, ByVal length As Integer) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.GetLicenseType_x64(licenseType, length), Native.GetLicenseType(licenseType, length))
+#Else
+            Return Native.GetLicenseType(licenseType, length)
+#End If
+        End Function
+
+        '
         '     FUNCTION: GetActivationMetadata()
 
         '     PURPOSE: Gets the activation metadata.
@@ -1129,6 +1149,10 @@ Namespace Cryptlex
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseType(ByVal licenseType As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
@@ -1260,6 +1284,10 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserName", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetLicenseUserName_x64(ByVal name As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseType", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseType_x64(ByVal licenseType As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
