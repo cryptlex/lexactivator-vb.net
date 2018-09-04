@@ -1,5 +1,5 @@
 # lexactivator-vb.net
-LexActivator API wrapper for VB.NET
+LexActivator - VB.NET licensing library 
 
 Refer to following for documentation:
 
