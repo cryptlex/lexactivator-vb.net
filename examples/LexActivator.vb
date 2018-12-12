@@ -148,7 +148,7 @@ Namespace Cryptlex
             If syncTarget IsNot Nothing Then
                 wrappedCallback = Function(v) syncTarget.Invoke(callback, New Object() {v})
             End If
-#If LF_ANY_CPU Then
+#If LA_ANY_CPU Then
             Return If(IntPtr.Size = 8, Native.SetLicenseCallback_x64(wrappedCallback), Native.SetLicenseCallback(wrappedCallback))
 #Else
             Return Native.SetLicenseCallback(wrappedCallback)
@@ -1289,7 +1289,7 @@ Namespace Cryptlex
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseCallback", CallingConvention:=CallingConvention.Cdecl)>
-            Public Shared Function SetLicenseCallback_x64(handle As UInteger, callback As CallbackType) As Integer
+            Public Shared Function SetLicenseCallback_x64(callback As CallbackType) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
