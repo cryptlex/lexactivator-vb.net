@@ -333,7 +333,7 @@ Namespace Cryptlex
         '
         '     FUNCTION: GetLicenseUserEmail()
 
-        '     PURPOSE: Gets the email associated with license user.
+        '     PURPOSE: Gets the email associated with the license user.
 
         '     PARAMETERS:
         '     * licenseKey - pointer to a buffer that receives the value of the string
@@ -353,7 +353,7 @@ Namespace Cryptlex
         '
         '     FUNCTION: GetLicenseUserName()
 
-        '     PURPOSE: Gets the name associated with license user.
+        '     PURPOSE: Gets the name associated with the license user.
 
         '     PARAMETERS:
         '     * name - pointer to a buffer that receives the value of the string
@@ -367,6 +367,46 @@ Namespace Cryptlex
             Return If(IntPtr.Size = 8, Native.GetLicenseUserName_x64(name, length), Native.GetLicenseUserName(name, length))
 #Else
             Return Native.GetLicenseUserName(name, length)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: GetLicenseUserCompany()
+
+        '     PURPOSE: Gets the company associated with the license user.
+
+        '     PARAMETERS:
+        '     * company - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the company parameter
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED,
+        '     LA_E_BUFFER_SIZE
+        '
+        Public Shared Function GetLicenseUserCompany(ByVal company As StringBuilder, ByVal length As Integer) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.GetLicenseUserCompany_x64(company, length), Native.GetLicenseUserCompany(company, length))
+#Else
+            Return Native.GetLicenseUserCompany(company, length)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: GetLicenseUserMetadata()
+
+        '     PURPOSE: Gets the metadata associated with the license user.
+
+        '     PARAMETERS:
+        '     * key - key to retrieve the value
+        '     * value - pointer to a buffer that receives the value of the string
+        '     * length - size of the buffer pointed to by the value parameter
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
+        '
+        Public Shared Function GetLicenseUserMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.GetLicenseUserMetadata_x64(key, value, length), Native.GetLicenseUserMetadata(key, value, length))
+#Else
+            Return Native.GetLicenseUserMetadata(key, value, length)
 #End If
         End Function
 
@@ -400,13 +440,31 @@ Namespace Cryptlex
         '     * value - pointer to a buffer that receives the value of the string
         '     * length - size of the buffer pointed to by the value parameter
 
-        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METADATA_KEY_NOT_FOUND, LA_E_BUFFER_SIZE
         '
         Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
 #If LA_ANY_CPU Then
             Return If(IntPtr.Size = 8, Native.GetActivationMetadata_x64(key, value, length), Native.GetActivationMetadata(key, value, length))
 #Else
             Return Native.GetActivationMetadata(key, value, length)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: GetServerSyncGracePeriodExpiryDate()
+
+        '     PURPOSE: Gets the server sync grace period expiry date timestamp.
+
+        '     PARAMETERS:
+        '     * expiryDate - pointer to the integer that receives the value
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_TIME, LA_E_TIME_MODIFIED
+        '
+        Public Shared Function GetServerSyncGracePeriodExpiryDate(ByRef expiryDate As UInteger) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.GetServerSyncGracePeriodExpiryDate_x64(expiryDate), Native.GetServerSyncGracePeriodExpiryDate(expiryDate))
+#Else
+            Return Native.GetServerSyncGracePeriodExpiryDate(expiryDate)
 #End If
         End Function
 
@@ -484,6 +542,36 @@ Namespace Cryptlex
 #Else
             Return Native.GetLocalTrialExpiryDate(trialExpiryDate)
 #End If
+        End Function
+
+        '
+        '     FUNCTION: CheckForReleaseUpdate()
+
+        '     PURPOSE: Checks whether a new release is available for the product.
+
+        '     This function should only be used if you manage your releases through
+        '     Cryptlex release management API.
+
+        '     PARAMETERS:
+        '     * platform - release platform e.g. windows, macos, linux
+        '     * version - current release version
+        '     * channel - release channel e.g. stable
+        '     * callback - name of the callback function.
+
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY, LA_E_RELEASE_VERSION_FORMAT
+        '
+        Public Shared Function CheckForReleaseUpdate(platform As String, version As String, channel As String, callback As CallbackType) As Integer
+            Dim wrappedCallback = callback
+            Dim syncTarget = TryCast(callback.Target, System.Windows.Forms.Control)
+            If syncTarget IsNot Nothing Then
+                wrappedCallback = Function(v) syncTarget.Invoke(callback, New Object() {v})
+            End If
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.CheckForReleaseUpdate_x64(platform, version, channel, wrappedCallback), Native.CheckForReleaseUpdate(platform, version, channel, wrappedCallback))
+#Else
+            Return Native.CheckForReleaseUpdate(platform, version, channel, wrappedCallback)
+#End If
+
         End Function
 
         '
@@ -858,6 +946,21 @@ Namespace Cryptlex
             LA_LOCAL_TRIAL_EXPIRED = 26
 
             '
+            '    CODE: LA_RELEASE_UPDATE_AVAILABLE
+
+            '    MESSAGE: A new update is available for the product. This means a new release has
+            '    been published for the product.
+            '
+            LA_RELEASE_UPDATE_AVAILABLE = 30
+
+            '
+            '    CODE: LA_RELEASE_NO_UPDATE_AVAILABLE
+
+            '    MESSAGE: No new update is available for the product. The current version is latest.
+            '
+            LA_RELEASE_NO_UPDATE_AVAILABLE = 31
+
+            '
             '    CODE: LA_E_FILE_PATH
 
             '    MESSAGE: Invalid file path.
@@ -1073,6 +1176,13 @@ Namespace Cryptlex
             LA_E_TIME_MODIFIED = 69
 
             '
+            '    CODE: LA_E_RELEASE_VERSION_FORMAT
+
+            '    MESSAGE: Invalid version format.
+            '
+            LA_E_RELEASE_VERSION_FORMAT = 70
+
+            '
             '    CODE: LA_E_VM
 
             '    MESSAGE: Application is being run inside a virtual machine / hypervisor
@@ -1188,11 +1298,23 @@ Namespace Cryptlex
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserCompany(ByVal company As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetLicenseType(ByVal licenseType As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetServerSyncGracePeriodExpiryDate(ByRef expiryDate As UInteger) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
@@ -1212,6 +1334,10 @@ Namespace Cryptlex
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function CheckForReleaseUpdate(ByVal platform As String, ByVal version As String, ByVal channel As String, callback As CallbackType) As Integer
+            End Function
+
+             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function ActivateLicense() As Integer
             End Function
 
@@ -1333,12 +1459,24 @@ Namespace Cryptlex
             Public Shared Function GetLicenseUserName_x64(ByVal name As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserCompany", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserCompany_x64(ByVal company As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseUserMetadata", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseUserMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseType", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetLicenseType_x64(ByVal licenseType As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetActivationMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetServerSyncGracePeriodExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetServerSyncGracePeriodExpiryDate_x64(ByRef expiryDate As UInteger) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetTrialActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
@@ -1355,6 +1493,10 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLocalTrialExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetLocalTrialExpiryDate_x64(ByRef trialExpiryDate As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="CheckForReleaseUpdate", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function CheckForReleaseUpdate_x64(ByVal platform As String, ByVal version As String, ByVal channel As String, callback As CallbackType) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ActivateLicense", CallingConvention:=CallingConvention.Cdecl)>
