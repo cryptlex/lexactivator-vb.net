@@ -28,6 +28,11 @@ Public Class Form1
             Me.statusLabel.Text = "License genuinely activated! Activation Status: " & status.ToString()
             Me.activateBtn.Text = "Deactivate"
             Me.activateTrialBtn.Enabled = False
+            ' Checking for software release update...
+            ' status = LexActivator.CheckForReleaseUpdate("windows", "1.0.0", "stable", AddressOf SoftwareReleaseUpdateCallback)
+            ' If status <> LexActivator.StatusCodes.LA_OK Then
+            '   Me.statusLabel.Text = "Error checking for software release update: " & status.ToString()
+            ' End If
             Return
         End If
 
@@ -114,5 +119,16 @@ Public Class Form1
     Private Function unixTimestamp() As UInteger
         Return CUInt((DateTime.UtcNow.Subtract(New DateTime(1970, 1, 1))).TotalSeconds)
     End Function
+
+    Private Sub SoftwareReleaseUpdateCallback(ByVal status As UInteger)
+        Select Case status
+            Case LexActivator.StatusCodes.LA_RELEASE_UPDATE_AVAILABLE
+                Me.statusLabel.Text = "An update is available for the app."
+            Case LexActivator.StatusCodes.LA_RELEASE_NO_UPDATE_AVAILABLE
+                ' Current version is latest
+            Case Else
+                Me.statusLabel.Text = "Release status code: " & status.ToString()
+        End Select
+    End Sub
 
 End Class
