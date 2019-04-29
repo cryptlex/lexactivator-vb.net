@@ -128,6 +128,28 @@ Namespace Cryptlex
         End Function
 
         '
+        '     FUNCTION: SetLicenseUserCredential()
+
+        '     PURPOSE: Sets the license user email and password for authentication.
+
+        '     This function must be called before ActivateLicense() or IsLicenseGenuine()
+        '     function if 'requireAuthentication' property of the license is set to true.
+
+        '     PARAMETERS:
+        '     * email - user email address.
+        '     * password - user password.
+
+        '     RETURN CODES: LA_OK, LA_E_PRODUCT_ID, LA_E_LICENSE_KEY
+        '
+        Public Shared Function SetLicenseUserCredential(ByVal email As String, ByVal password As String) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.SetLicenseUserCredential_x64(email, password), Native.SetLicenseUserCredential(email, password))
+#Else
+            Return Native.SetLicenseUserCredential(email, password)
+#End If
+        End Function
+
+        '
         '     FUNCTION: SetLicenseCallback()
 
         '     PURPOSE: Sets server sync callback Function.
@@ -136,7 +158,7 @@ Namespace Cryptlex
         '     license callback Function gets invoked With the following status codes:
         '     LA_OK, LA_EXPIRED, LA_SUSPENDED,
         '     LA_E_REVOKED, LA_E_ACTIVATION_NOT_FOUND, LA_E_MACHINE_FINGERPRINT
-        '     LA_E_COUNTRY, LA_E_INET, LA_E_SERVER, LA_E_RATE_LIMIT, LA_E_IP
+        '     LA_E_AUTHENTICATION_FAILED, LA_E_COUNTRY, LA_E_INET, LA_E_SERVER, LA_E_RATE_LIMIT, LA_E_IP
 
         '     PARAMETERS:
         '     * callback - name of the callback function
@@ -586,7 +608,7 @@ Namespace Cryptlex
 
         '     RETURN CODES: LA_OK, LA_EXPIRED, LA_SUSPENDED, LA_E_REVOKED, LA_FAIL, LA_E_PRODUCT_ID,
         '     LA_E_INET, LA_E_VM, LA_E_TIME, LA_E_ACTIVATION_LIMIT, LA_E_SERVER, LA_E_CLIENT, LA_E_LICENSE_KEY,
-        '     LA_E_LICENSE_TYPE, LA_E_COUNTRY, LA_E_IP, LA_E_RATE_LIMIT
+        '     LA_E_AUTHENTICATION_FAILED, LA_E_LICENSE_TYPE, LA_E_COUNTRY, LA_E_IP, LA_E_RATE_LIMIT
         '
         Public Shared Function ActivateLicense() As Integer
 #If LA_ANY_CPU Then
@@ -1183,6 +1205,13 @@ Namespace Cryptlex
             LA_E_RELEASE_VERSION_FORMAT = 70
 
             '
+            '    CODE: LA_E_AUTHENTICATION_FAILED
+
+            '    MESSAGE: Incorrect email or password.
+            '
+            LA_E_AUTHENTICATION_FAILED = 71
+
+            '
             '    CODE: LA_E_VM
 
             '    MESSAGE: Application is being run inside a virtual machine / hypervisor
@@ -1251,6 +1280,10 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function SetLicenseKey(ByVal licenseKey As String) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetLicenseUserCredential(ByVal email As String, ByVal password As String) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
@@ -1413,6 +1446,10 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseKey", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function SetLicenseKey_x64(ByVal licenseKey As String) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseUserCredential", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function SetLicenseUserCredential_x64(ByVal email As String, ByVal password As String) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="SetLicenseCallback", CallingConvention:=CallingConvention.Cdecl)>
