@@ -316,6 +316,26 @@ Namespace Cryptlex
         End Function
 
         '
+        '     FUNCTION: GetLicenseMeterAttribute()
+
+        '     PURPOSE: Gets the license meter attribute allowed uses and total uses.
+
+        '     PARAMETERS:
+        '     * name - name of the meter attribute
+        '     * allowedUses - pointer to the integer that receives the value
+        '     * totalUses - pointer to the integer that receives the value
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METER_ATTRIBUTE_NOT_FOUND
+        '
+        Public Shared Function GetLicenseMeterAttribute(ByVal name As String, ByRef allowedUses As UInteger, ByRef totalUses As UInteger) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.GetLicenseMeterAttribute_x64(name, allowedUses, totalUses), Native.GetLicenseMeterAttribute(name, allowedUses, totalUses))
+#Else
+            Return Native.GetLicenseMeterAttribute(name, allowedUses, totalUses)
+#End If
+        End Function
+
+        '
         '     FUNCTION: GetLicenseKey()
 
         '     PURPOSE: Gets the license key used for activation.
@@ -469,6 +489,25 @@ Namespace Cryptlex
             Return If(IntPtr.Size = 8, Native.GetActivationMetadata_x64(key, value, length), Native.GetActivationMetadata(key, value, length))
 #Else
             Return Native.GetActivationMetadata(key, value, length)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: GetActivationMeterAttributeUses()
+
+        '     PURPOSE: Gets the meter attribute uses consumed by the activation.
+
+        '     PARAMETERS:
+        '     * name - name of the meter attribute
+        '     * uses - pointer to the integer that receives the value
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METER_ATTRIBUTE_NOT_FOUND
+        '
+        Public Shared Function GetActivationMeterAttributeUses(ByVal name As String, ByRef uses As UInteger) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.GetActivationMeterAttributeUses_x64(name, uses), Native.GetActivationMeterAttributeUses(name, uses))
+#Else
+            Return Native.GetActivationMeterAttributeUses(name, uses)
 #End If
         End Function
 
@@ -895,6 +934,71 @@ Namespace Cryptlex
         End Function
 
         '
+        '     FUNCTION: IncrementActivationMeterAttributeUses()
+
+        '     PURPOSE: Increments the meter attribute uses of the activation.
+
+        '     PARAMETERS:
+        '     * name - name of the meter attribute
+        '     * increment - the increment value
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METER_ATTRIBUTE_NOT_FOUND,
+        '     LA_E_INET, LA_E_TIME, LA_E_SERVER, LA_E_CLIENT, LA_E_METER_ATTRIBUTE_USES_LIMIT_REACHED,
+        '     LA_E_AUTHENTICATION_FAILED, LA_E_COUNTRY, LA_E_IP, LA_E_RATE_LIMIT, LA_E_LICENSE_KEY
+
+        '
+        Public Shared Function IncrementActivationMeterAttributeUses(ByVal name As String, increment As UInteger) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.IncrementActivationMeterAttributeUses_x64(name, increment), Native.IncrementActivationMeterAttributeUses(name, increment))
+#Else
+            Return Native.IncrementActivationMeterAttributeUses(name, increment)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: DecrementActivationMeterAttributeUses()
+
+        '     PURPOSE: Decrements the meter attribute uses of the activation.
+
+        '     PARAMETERS:
+        '     * name - name of the meter attribute
+        '     * decrement - the decrement value
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METER_ATTRIBUTE_NOT_FOUND,
+        '     LA_E_INET, LA_E_TIME, LA_E_SERVER, LA_E_CLIENT, LA_E_RATE_LIMIT, LA_E_LICENSE_KEY,
+        '     LA_E_AUTHENTICATION_FAILED, LA_E_COUNTRY, LA_E_IP, LA_E_ACTIVATION_NOT_FOUND
+
+        '
+        Public Shared Function DecrementActivationMeterAttributeUses(ByVal name As String, decrement As UInteger) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.DecrementActivationMeterAttributeUses_x64(name, decrement), Native.DecrementActivationMeterAttributeUses(name, decrement))
+#Else
+            Return Native.DecrementActivationMeterAttributeUses(name, decrement)
+#End If
+        End Function
+
+        '
+        '     FUNCTION: ResetActivationMeterAttributeUses()
+
+        '     PURPOSE: Resets the meter attribute uses of the activation.
+
+        '     PARAMETERS:
+        '     * name - name of the meter attribute
+
+        '     RETURN CODES: LA_OK, LA_FAIL, LA_E_PRODUCT_ID, LA_E_METER_ATTRIBUTE_NOT_FOUND,
+        '     LA_E_INET, LA_E_TIME, LA_E_SERVER, LA_E_CLIENT, LA_E_RATE_LIMIT, LA_E_LICENSE_KEY,
+        '     LA_E_AUTHENTICATION_FAILED, LA_E_COUNTRY, LA_E_IP, LA_E_ACTIVATION_NOT_FOUND
+
+        '
+        Public Shared Function ResetActivationMeterAttributeUses(ByVal name As String) As Integer
+#If LA_ANY_CPU Then
+            Return If(IntPtr.Size = 8, Native.ResetActivationMeterAttributeUses_x64(name), Native.ResetActivationMeterAttributeUses(name))
+#Else
+            Return Native.ResetActivationMeterAttributeUses(name)
+#End If
+        End Function
+
+        '
         '     FUNCTION: Reset()
 
         '     PURPOSE: Resets the activation and trial data stored in the machine.
@@ -1212,6 +1316,20 @@ Namespace Cryptlex
             LA_E_AUTHENTICATION_FAILED = 71
 
             '
+            '    CODE: LA_E_METER_ATTRIBUTE_NOT_FOUND
+
+            '    MESSAGE: The meter attribute does not exist.
+            '
+            LA_E_METER_ATTRIBUTE_NOT_FOUND = 72
+
+            '
+            '    CODE: LA_E_METER_ATTRIBUTE_USES_LIMIT_REACHED
+
+            '    MESSAGE: The meter attribute has reached it's usage limit.
+            '
+            LA_E_METER_ATTRIBUTE_USES_LIMIT_REACHED = 73
+
+            '
             '    CODE: LA_E_VM
 
             '    MESSAGE: Application is being run inside a virtual machine / hypervisor
@@ -1315,6 +1433,10 @@ Namespace Cryptlex
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseMeterAttribute(ByVal name As String, ByRef allowedUses As UInteger, ByRef totalUses As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetLicenseKey(ByVal licenseKey As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
@@ -1344,6 +1466,10 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetActivationMetadata(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetActivationMeterAttributeUses(ByVal name As String, ByRef uses As UInteger) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
@@ -1427,6 +1553,18 @@ Namespace Cryptlex
             End Function
 
             <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IncrementActivationMeterAttributeUses(ByVal name As String, increment As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function DecrementActivationMeterAttributeUses(ByVal name As String, decrement As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ResetActivationMeterAttributeUses(ByVal name As String) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME, CharSet:=CharSet.Unicode, CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function Reset() As Integer
             End Function
 
@@ -1480,6 +1618,10 @@ Namespace Cryptlex
             Public Shared Function GetLicenseMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
             End Function
 
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseMeterAttribute", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetLicenseMeterAttribute_x64(ByVal name As String, ByRef allowedUses As UInteger, ByRef totalUses As UInteger) As Integer
+            End Function
+
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetLicenseKey", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetLicenseKey_x64(ByVal licenseKey As StringBuilder, ByVal length As Integer) As Integer
             End Function
@@ -1510,6 +1652,10 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationMetadata", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function GetActivationMetadata_x64(ByVal key As String, ByVal value As StringBuilder, ByVal length As Integer) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetActivationMeterAttributeUses", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function GetActivationMeterAttributeUses_x64(ByVal name As String, ByRef uses As UInteger) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="GetServerSyncGracePeriodExpiryDate", CallingConvention:=CallingConvention.Cdecl)>
@@ -1590,6 +1736,18 @@ Namespace Cryptlex
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ExtendLocalTrial", CallingConvention:=CallingConvention.Cdecl)>
             Public Shared Function ExtendLocalTrial_x64(ByVal trialExtensionLength As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="IncrementActivationMeterAttributeUses", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function IncrementActivationMeterAttributeUses_x64(ByVal name As String, increment As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="DecrementActivationMeterAttributeUses", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function DecrementActivationMeterAttributeUses_x64(ByVal name As String, decrement As UInteger) As Integer
+            End Function
+
+            <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="ResetActivationMeterAttributeUses", CallingConvention:=CallingConvention.Cdecl)>
+            Public Shared Function ResetActivationMeterAttributeUses_x64(ByVal name As String) As Integer
             End Function
 
             <DllImport(DLL_FILE_NAME_X64, CharSet:=CharSet.Unicode, EntryPoint:="Reset", CallingConvention:=CallingConvention.Cdecl)>
