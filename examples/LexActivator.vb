@@ -172,7 +172,7 @@ Namespace Cryptlex
             If syncTarget IsNot Nothing Then
                 wrappedCallback = Function(v) syncTarget.Invoke(callback, New Object() {v})
             End If
-            callbackList.Add(wrappedCallback);
+            callbackList.Add(wrappedCallback)
 #If LA_ANY_CPU Then
             Return If(IntPtr.Size = 8, Native.SetLicenseCallback_x64(wrappedCallback), Native.SetLicenseCallback(wrappedCallback))
 #Else
@@ -629,7 +629,7 @@ Namespace Cryptlex
             If syncTarget IsNot Nothing Then
                 wrappedCallback = Function(v) syncTarget.Invoke(callback, New Object() {v})
             End If
-            callbackList.Add(wrappedCallback);
+            callbackList.Add(wrappedCallback)
 #If LA_ANY_CPU Then
             Return If(IntPtr.Size = 8, Native.CheckForReleaseUpdate_x64(platform, version, channel, wrappedCallback), Native.CheckForReleaseUpdate(platform, version, channel, wrappedCallback))
 #Else
