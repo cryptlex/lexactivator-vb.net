@@ -40,7 +40,7 @@ Public Class Form1
         If status = LexActivator.StatusCodes.LA_OK Then
             Dim trialExpiryDate As UInteger = 0
             LexActivator.GetTrialExpiryDate(trialExpiryDate)
-            Dim daysLeft As Integer = CInt((trialExpiryDate - unixTimestamp())) / 86500
+            Dim daysLeft As Integer = CInt((trialExpiryDate - unixTimestamp())) / 86400
             Me.statusLabel.Text = "Trial period! Days left:" & daysLeft.ToString()
             Me.activateTrialBtn.Enabled = False
         ElseIf status = LexActivator.StatusCodes.LA_TRIAL_EXPIRED Then
